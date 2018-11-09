@@ -61,10 +61,10 @@ public class MiniMediaPlayerFragment extends Fragment {
             public void onClick(View view) {
                 if (RecyclerViewAdapter.mMediaPlayer.isPlaying()) {
                     RecyclerViewAdapter.mMediaPlayer.pause();
-                    playBtn.setBackgroundResource(R.drawable.play);
+                    playBtn.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp);
                 } else if (!RecyclerViewAdapter.mMediaPlayer.isPlaying()) {
                     RecyclerViewAdapter.mMediaPlayer.start();
-                    playBtn.setBackgroundResource(R.drawable.stop);
+                    playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp);
                 }
 
             }

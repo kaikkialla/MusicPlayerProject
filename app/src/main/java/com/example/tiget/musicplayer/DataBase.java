@@ -9,9 +9,9 @@ public class DataBase {
 
 
 
-            new Constructor("Music", "Stranger Things", "Theme song(C418 remix)","http://blogstop.city/srhj67rbsexual/ayo/ayo%20and%20teo%20-%20better%20off%20alone.mp3", R.drawable.a)
-            ,new Constructor("Music","Pixies", "Where is my mind", "http://blogstop.city/srhj67rbsexual/ayo/ayo%20and%20teo%20-%20better%20off%20alone.mp3", R.drawable.b)
-            ,new Constructor("Music","Ayo & Teo", "Better off alone", "http://blogstop.city/srhj67rbsexual/ayo/ayo%20and%20teo%20-%20better%20off%20alone.mp3", R.drawable.c)
+            new Constructor("Music", "Stranger Things", "Theme song(C418 remix)","http://blogstop.city/srhj67rbsexual/ayo/ayo%20and%20teo%20-%20better%20off%20alone.mp3", R.drawable.a, true)
+            ,new Constructor("Music","Pixies", "Where is my mind", "http://blogstop.city/srhj67rbsexual/ayo/ayo%20and%20teo%20-%20better%20off%20alone.mp3", R.drawable.b, false)
+            ,new Constructor("Music","Ayo & Teo", "Better off alone", "http://blogstop.city/srhj67rbsexual/ayo/ayo%20and%20teo%20-%20better%20off%20alone.mp3", R.drawable.c, true)
 
     };
 

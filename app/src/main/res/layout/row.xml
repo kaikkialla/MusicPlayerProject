@@ -35,22 +35,23 @@
         android:layout_marginRight="64dp"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/AuthorName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textSize="18dp"/>
 
         <TextView
             android:id="@+id/SongName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:textSize="18dp"/>
+            android:textSize="18dp"
+            android:textColor="@color/colorTextDark"/>
 
 
-
+        <TextView
+            android:id="@+id/AuthorName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="18dp"
+            android:textColor="@color/colorTextLight"/>
     </LinearLayout>
 
     <TextView
@@ -60,6 +61,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="16dp"
+        android:textColor="@color/colorTextLight"
         />
 
 
