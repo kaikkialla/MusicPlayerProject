@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 public class MiniMediaPlayerFragment extends Fragment {
 
-    Button playBtn;
+    public static Button playBtn;
     TextView SongNameTextView;
     ImageView SongImage;
     LinearLayout mainContainer;
@@ -59,17 +59,19 @@ public class MiniMediaPlayerFragment extends Fragment {
         playBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (RecyclerViewAdapter.mMediaPlayer.isPlaying()) {
-                    RecyclerViewAdapter.mMediaPlayer.pause();
-                    playBtn.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp);
-                } else if (!RecyclerViewAdapter.mMediaPlayer.isPlaying()) {
-                    RecyclerViewAdapter.mMediaPlayer.start();
-                    playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+                if (BackgroundService.mMediaPlayer.isPlaying()) {
+                    BackgroundService.mMediaPlayer.pause();//Ставим на паузу
+                    playBtn.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp);//Меняем иконку
+                } else if (!BackgroundService.mMediaPlayer.isPlaying()) {
+                    BackgroundService.mMediaPlayer.start();//Запускаем
+                    playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp);//Меняем иконку
                 }
 
             }
         });
 
+
+        //По нажатию на тело фрагмента, открываем большой MediaPlayer
         mainContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

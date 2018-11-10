@@ -62,9 +62,12 @@ public class MediaPlayerFragment extends Fragment {
                 //RecyclerViewAdapter.mMediaPlayer.stop();
 
                 RecyclerViewFragment recyclerViewFragment = RecyclerViewFragment.newInstance(constructor);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, recyclerViewFragment).commit();
-
+                MediaPlayerFragment mediaPlayerFragment = MediaPlayerFragment.newInstance(constructor);
                 MiniMediaPlayerFragment miniMediaPlayer = MiniMediaPlayerFragment.newInstance(constructor);
+
+
+
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, recyclerViewFragment).commit();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.miniFrameLayout, miniMediaPlayer).commit();
 
             }
@@ -96,8 +99,8 @@ public class MediaPlayerFragment extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 if (b) {
-                    RecyclerViewAdapter.mMediaPlayer.seekTo(i);
-                    RecyclerViewAdapter.mMediaPlayer.start();
+                    BackgroundService.mMediaPlayer.seekTo(i);
+                    BackgroundService.mMediaPlayer.start();
                     positionBar.setProgress(i);
                 }
             }
@@ -117,7 +120,7 @@ public class MediaPlayerFragment extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 float volumeNum = i / 100f;
-                RecyclerViewAdapter.mMediaPlayer.setVolume(volumeNum, volumeNum);
+                BackgroundService.mMediaPlayer.setVolume(volumeNum, volumeNum);
             }
 
             @Override
@@ -133,13 +136,11 @@ public class MediaPlayerFragment extends Fragment {
         playBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (RecyclerViewAdapter.mMediaPlayer.isPlaying()) {
-                    Log.e("a", "IsPlaying");
-                    RecyclerViewAdapter.mMediaPlayer.pause();
+                if (BackgroundService.mMediaPlayer.isPlaying()) {
+                    BackgroundService.mMediaPlayer.pause();
                     playBtn.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp);
-                } else if (!RecyclerViewAdapter.mMediaPlayer.isPlaying()) {
-                    Log.e("a", "IsPlaying");
-                    RecyclerViewAdapter.mMediaPlayer.start();
+                } else if (!BackgroundService.mMediaPlayer.isPlaying()) {
+                    BackgroundService.mMediaPlayer.start();
                     playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp);
                 }
 
@@ -151,10 +152,10 @@ public class MediaPlayerFragment extends Fragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (RecyclerViewAdapter.mMediaPlayer != null) {
+                while (BackgroundService.mMediaPlayer != null) {
                     try {
                         Message msg = new Message();
-                        msg.what = RecyclerViewAdapter.mMediaPlayer.getCurrentPosition();
+                        msg.what = BackgroundService.mMediaPlayer.getCurrentPosition();
                         handler.sendMessage(msg);
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {

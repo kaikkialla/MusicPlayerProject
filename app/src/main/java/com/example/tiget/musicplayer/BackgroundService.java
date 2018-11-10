@@ -7,12 +7,14 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.*;
 
-
+/**Сервис, играющий музыку на заднем фоне(даже когда приложение сверунто/выключено)*/
 public class BackgroundService extends Service {
 
     public Context context = this;
     public Handler handler = null;
     public static Runnable runnable = null;
+    public static MediaPlayer mMediaPlayer;
+
 
 
     @Override
@@ -27,13 +29,14 @@ public class BackgroundService extends Service {
         context = getApplicationContext();
         //TODO
 
-        final String SongUri = RecyclerViewAdapter.SongUri;
+        final String SongUri = RecyclerViewAdapter.SongUri;//Получаем ссылку на песню
 
-        RecyclerViewAdapter.mMediaPlayer = MediaPlayer.create(context, Uri.parse("http://blogstop.city/srhj67rbsexual/ayo/ayo%20and%20teo%20-%20better%20off%20alone.mp3"));
-        RecyclerViewAdapter.mMediaPlayer.setLooping(false);
-        RecyclerViewAdapter.mMediaPlayer.seekTo(0);
-        RecyclerViewAdapter.mMediaPlayer.setVolume(0.3f, 0.7f);
-        RecyclerViewAdapter.mMediaPlayer.start();
+        mMediaPlayer = MediaPlayer.create(context, Uri.parse(SongUri));//Создаем MediaPlayer
+        mMediaPlayer.setLooping(false);//Песня не будет повторяться
+        mMediaPlayer.seekTo(0);//Песня влючится на 0й секунде
+        mMediaPlayer.setVolume(0.3f, 0.7f);//Начальная громкость
+        mMediaPlayer.start();//Запускаем
+
 
 
     }
@@ -41,7 +44,7 @@ public class BackgroundService extends Service {
     @Override
     public void onDestroy() {
         /* IF YOU WANT THIS SERVICE KILLED WITH THE APP THEN UNCOMMENT THE FOLLOWING LINE */
-        handler.removeCallbacks(runnable);
+        handler.removeCallbacks(runnable);//заканчивает процесс при выключении приложения(Можно убрать, тогда будет работать всегда)
     }
 
     @Override

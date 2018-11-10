@@ -16,7 +16,8 @@
             android:id="@+id/mini_preview"
             android:layout_width="56dp"
             android:layout_height="56dp"
-            android:layout_margin="8dp"/>
+            android:layout_margin="8dp"
+            android:scaleType="centerCrop"/>
 
         <TextView
             android:id="@+id/mini_song_name"
