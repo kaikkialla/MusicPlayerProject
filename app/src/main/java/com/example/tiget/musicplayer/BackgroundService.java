@@ -1,13 +1,13 @@
 package com.example.tiget.musicplayer;
 
-
 import android.app.Service;
-import android.content.*;
+import android.content.Context;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.*;
+import android.os.Handler;
+import android.os.IBinder;
 
-/**Сервис, играющий музыку на заднем фоне(даже когда приложение сверунто/выключено)*/
 public class BackgroundService extends Service {
 
     public Context context = this;
@@ -29,8 +29,10 @@ public class BackgroundService extends Service {
         context = getApplicationContext();
         //TODO
 
+
         final String SongUri = RecyclerViewAdapter.SongUri;//Получаем ссылку на песню
 
+        mMediaPlayer = null;
         mMediaPlayer = MediaPlayer.create(context, Uri.parse(SongUri));//Создаем MediaPlayer
         mMediaPlayer.setLooping(false);//Песня не будет повторяться
         mMediaPlayer.seekTo(0);//Песня влючится на 0й секунде

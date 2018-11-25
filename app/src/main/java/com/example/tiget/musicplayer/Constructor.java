@@ -1,13 +1,9 @@
 package com.example.tiget.musicplayer;
 
-
-
 import java.io.Serializable;
 
-
-
-
-public class Constructor implements Serializable{
+public class Constructor implements Serializable {
+    public long id;
     public String type;
     public String AuthorName;
     public String SongName;
@@ -15,7 +11,8 @@ public class Constructor implements Serializable{
     public int SongPreview;
     boolean explicit;
 
-    public Constructor(String type, String AuthorName, String SongName, String SongUri, int SongPreview, boolean explicit){
+    public Constructor(long id, String type, String AuthorName, String SongName, String SongUri, int SongPreview, boolean explicit){
+        this.id = id;
         this.type = type;
         this.AuthorName = AuthorName;
         this.SongName = SongName;
@@ -23,6 +20,35 @@ public class Constructor implements Serializable{
         this.SongPreview = SongPreview;
         this.explicit = explicit;
 
+    }
+
+
+    public long getId(){
+        return id;
+    }
+
+    public String getType(){
+        return type;
+    }
+
+    public String getAuthorName(){
+        return AuthorName;
+    }
+
+    public String getSongName(){
+        return SongName;
+    }
+
+    public String getSongUri(){
+        return SongUri;
+    }
+
+    public int getSongPreview(){
+        return SongPreview;
+    }
+
+    public boolean getExplicit(){
+        return explicit;
     }
 
 }
