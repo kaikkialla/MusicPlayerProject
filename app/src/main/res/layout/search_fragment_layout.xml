@@ -5,9 +5,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:background="#333">
 
     <!-- Image on top of the screen. Looks like recyclerView scrolls on top of it -->
+
+    <RelativeLayout
+        android:layout_height="192dp"
+        android:layout_width="match_parent">
+
+        <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="192dp"
+        android:fitsSystemWindows="true"
+        android:scaleType="centerCrop"/>
+
+        <TextView
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFF"
+            android:textSize="36dp"
+            android:text="Search"/>
+
+    </RelativeLayout>
+
+
 
 
     <android.support.design.widget.AppBarLayout
@@ -17,6 +42,7 @@
         android:fitsSystemWindows="true"
         android:background="@color/colorTransparent"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
@@ -25,13 +51,13 @@
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-
             <!--  Collapsing image. Right now - transparent -->
 
             <ImageView
                 android:id="@+id/header"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@android:color/transparent"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax" />
@@ -39,14 +65,33 @@
     </android.support.design.widget.AppBarLayout>
 
 
-    <ScrollView
-        android:id="@+id/recyclerView"
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="@drawable/search_edit_text_background"
+        android:layout_gravity="center_horizontal|top"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_marginTop="16dp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/SearchRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context=".MainActivity"
         tools:showIn="@layout/activity_main"
-        android:background="@color/colorPrimary">
-    </ScrollView>
+        android:layout_marginTop="100dp"
+        android:background="#FFF"/>
+
+
+
+
+    <!-- margin top - расстояние от верха recycler view-->
+
+
+
+
+
 
 </android.support.design.widget.CoordinatorLayout>

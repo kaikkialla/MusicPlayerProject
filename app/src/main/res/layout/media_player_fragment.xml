@@ -5,7 +5,8 @@
     android:orientation="vertical"
     android:gravity="center_horizontal"
     android:background="#FFFFFF"
-    android:id="@+id/media_player_layout">
+    android:id="@+id/media_player_layout"
+    >
 
     <ImageView
         android:id="@+id/backBtn"

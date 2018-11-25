@@ -28,10 +28,10 @@ public class MainActivity extends AppCompatActivity {
                                 getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, new HomeActivity(), null).commit();
                                 break;
                             case R.id.search:
-                                getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, new PremiumActivity.SearchActivity(), null).commit();
+                                getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, new SearchFragment(), null).commit();
                                 break;
                             case R.id.your_library:
-                                getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, new RecyclerViewFragment(), null).commit();
+                                getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, new PlaylistFragment(), null).commit();
                                 break;
                             case R.id.premium:
                                 getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, new PremiumActivity(), null).commit();

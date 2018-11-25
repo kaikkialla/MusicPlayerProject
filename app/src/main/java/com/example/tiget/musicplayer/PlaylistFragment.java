@@ -28,11 +28,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class RecyclerViewFragment extends Fragment {
+public class PlaylistFragment extends Fragment {
 
 
-    public static RecyclerViewFragment newInstance(Constructor constructor) {
-        RecyclerViewFragment fragnent = new RecyclerViewFragment();
+    public static PlaylistFragment newInstance(Constructor constructor) {
+        PlaylistFragment fragnent = new PlaylistFragment();
         return fragnent;
     }
 
@@ -61,7 +61,7 @@ public class RecyclerViewFragment extends Fragment {
 
 
 
-class RecyclerViewAdapter extends RecyclerView.Adapter<ViewHolder> {
+class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
 
     MainActivity activity;
     public static String SongUri;
@@ -78,20 +78,20 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<ViewHolder> {
 
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public PlaylistViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(activity);
         View v = inflater.inflate(R.layout.library_recycler_view_row, parent, false );
-        ViewHolder vh = new ViewHolder(v);
+        PlaylistViewHolder vh = new PlaylistViewHolder(v);
 
         return vh;
 
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(final PlaylistViewHolder holder, final int position) {
         context = this.context;
 
-        final Constructor constructor = DataBase.Arr[position];
+        final Constructor constructor = PlaylistDatabase.Arr[position];
         holder.SongName.setText(constructor.SongName);
         holder.AuthorName.setText(constructor.AuthorName);
         holder.SongPreview.setImageResource(constructor.SongPreview);
@@ -220,7 +220,7 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return DataBase.Arr.length;
+        return PlaylistDatabase.Arr.length;
 
     }
 
@@ -275,7 +275,7 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<ViewHolder> {
 
 
 
-class ViewHolder extends RecyclerView.ViewHolder {
+class PlaylistViewHolder extends RecyclerView.ViewHolder {
 
     View itemView;
     Context context;
@@ -291,7 +291,7 @@ class ViewHolder extends RecyclerView.ViewHolder {
     RelativeLayout playPausePreviewLayout;//Макет с превью, кнопкой паузы и прогресс баром, появл при нажатии
 
 
-    public ViewHolder(View itemView) {
+    public PlaylistViewHolder(View itemView) {
         super(itemView);
         this.context = context;
 

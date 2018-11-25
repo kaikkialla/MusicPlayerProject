@@ -61,7 +61,7 @@ public class MediaPlayerFragment extends Fragment {
             public void onClick(View view) {
                 //RecyclerViewAdapter.mMediaPlayer.stop();
 
-                RecyclerViewFragment recyclerViewFragment = RecyclerViewFragment.newInstance(constructor);
+                PlaylistFragment recyclerViewFragment = PlaylistFragment.newInstance(constructor);
                 MediaPlayerFragment mediaPlayerFragment = MediaPlayerFragment.newInstance(constructor);
                 MiniMediaPlayerFragment miniMediaPlayer = MiniMediaPlayerFragment.newInstance(constructor);
 

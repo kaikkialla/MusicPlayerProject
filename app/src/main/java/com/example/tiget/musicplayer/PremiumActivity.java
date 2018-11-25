@@ -26,18 +26,6 @@ public class PremiumActivity  extends Fragment {
         return view;
     }
 
-    public static class SearchActivity extends Fragment {
-
-        @Nullable
-        @Override
-        public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            final Context context = getContext();
-            //создаем главную вьюшку
-            View view = inflater.inflate(R.layout.search_fragment_layout, container, false);
-            return view;
-        }
-    }
-
     /**Сервис, играющий музыку на заднем фоне(даже когда приложение сверунто/выключено)*/
 
 

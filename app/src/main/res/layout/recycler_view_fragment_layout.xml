@@ -3,8 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#FFFFFF"
-    android:id="@+id/main_menu_layout">
+    android:background="#333"
+    android:id="@+id/main_menu_layout"
+    >
 
 
     <android.support.design.widget.AppBarLayout
@@ -21,6 +22,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#333"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_marginLeft="8dp">
     </android.support.v7.widget.RecyclerView>

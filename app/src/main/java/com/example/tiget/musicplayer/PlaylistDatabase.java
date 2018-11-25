@@ -1,6 +1,6 @@
 package com.example.tiget.musicplayer;
 
-public class DataBase {
+public class PlaylistDatabase {
 
 
 
