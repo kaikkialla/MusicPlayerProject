@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -102,7 +103,7 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
 
 
         SongUri = constructor.SongUri;
-
+/*Из-за этого лагает, надо чем-нибудь заменить
         SongLenghtMediaPlayer = MediaPlayer.create(activity, Uri.parse(SongUri));//Создаем MediaPlayer для получения длины песни(позже им не пользуемся)
         totalTime = SongLenghtMediaPlayer.getDuration();//Получаем длину песни
         //Конвертируем милисекунды(длину песни) в минуты и секунды
@@ -114,7 +115,7 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
         timeLabel += sec;
         holder.SongLenght.setText(String.valueOf(timeLabel));
         SongLenghtMediaPlayer = null;//Удаляем MediaPlayer для получения длины песни
-
+*/
 
 
         /*
@@ -122,6 +123,7 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
         Не работает смена песни по id
 
          */
+
 
         //Нажатие на тело песни(без превьюшки)
         holder.mainContainer.setOnClickListener(new View.OnClickListener() {
@@ -238,7 +240,7 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
     //метод, рисующий фрагмент с иформацией о валюте
     private void showMediaFragment(Constructor constructor) {
         MediaPlayerFragment fragment = MediaPlayerFragment.newInstance(constructor);
-        activity.getSupportFragmentManager().beginTransaction().setCustomAnimations(R.animator.media_player_fade_in, R.animator.media_player_fade_out).replace(R.id.FrameLayout, fragment).commit();
+        activity.getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, fragment).commit();
     }
 
 
