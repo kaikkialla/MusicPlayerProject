@@ -1,4 +1,4 @@
-package com.example.tiget.musicplayer;
+package com.example.tiget.musicplayer.ui.Library;
 
 
 
@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -24,6 +23,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.example.tiget.musicplayer.R;
+import com.example.tiget.musicplayer.ui.MainActivity;
+
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -32,7 +34,7 @@ import java.util.TimerTask;
 public class PlaylistFragment extends Fragment {
 
 
-    public static PlaylistFragment newInstance(Constructor constructor) {
+    public static PlaylistFragment newInstance(SongConstructor constructor) {
         PlaylistFragment fragnent = new PlaylistFragment();
         return fragnent;
     }
@@ -92,7 +94,7 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
     public void onBindViewHolder(final PlaylistViewHolder holder, final int position) {
         context = this.context;
 
-        final Constructor constructor = PlaylistDatabase.Arr[position];
+        final SongConstructor  constructor = PlaylistDatabase.Arr[position];
         holder.SongName.setText(constructor.SongName);
         holder.AuthorName.setText(constructor.AuthorName);
         holder.SongPreview.setImageResource(constructor.SongPreview);
@@ -102,7 +104,11 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
 
 
 
+
+
         SongUri = constructor.SongUri;
+
+
 /*Из-за этого лагает, надо чем-нибудь заменить
         SongLenghtMediaPlayer = MediaPlayer.create(activity, Uri.parse(SongUri));//Создаем MediaPlayer для получения длины песни(позже им не пользуемся)
         totalTime = SongLenghtMediaPlayer.getDuration();//Получаем длину песни
@@ -227,7 +233,7 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
     }
 
 
-    public void ShowMiniMediaFragment(Constructor constructor) {
+    public void ShowMiniMediaFragment(SongConstructor  constructor) {
         //Создаем сервис для действий в фоновом режиме
         activity.startService(new Intent(activity, BackgroundService.class));
         //открываем фрагмент с плеером внизу экрана
@@ -238,9 +244,12 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
 
 
     //метод, рисующий фрагмент с иформацией о валюте
-    private void showMediaFragment(Constructor constructor) {
+    private void showMediaFragment(SongConstructor  constructor) {
+
+        //MediaPlayerFragment bottomSheet = new MediaPlayerFragment.newInstance(constructor);
         MediaPlayerFragment fragment = MediaPlayerFragment.newInstance(constructor);
-        activity.getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, fragment).commit();
+        fragment.show(activity.getSupportFragmentManager(), "BottomSheet");
+        //activity.getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, fragment).commit();
     }
 
 
@@ -289,6 +298,7 @@ class PlaylistViewHolder extends RecyclerView.ViewHolder {
     ImageView previewStopPauseButton;
     RelativeLayout previewSongController;
 
+
     LinearLayout mainContainer;
     RelativeLayout playPausePreviewLayout;//Макет с превью, кнопкой паузы и прогресс баром, появл при нажатии
 
@@ -309,6 +319,7 @@ class PlaylistViewHolder extends RecyclerView.ViewHolder {
 
         playPausePreviewLayout = itemView.findViewById(R.id.play_pause_preview_layout);
         mainContainer = itemView.findViewById(R.id.main_container);
+
 
 
 

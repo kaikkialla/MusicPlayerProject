@@ -1,11 +1,13 @@
-package com.example.tiget.musicplayer;
+package com.example.tiget.musicplayer.ui.Library;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +17,10 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.example.tiget.musicplayer.R;
 
 
-public class MediaPlayerFragment extends Fragment {
+public class MediaPlayerFragment extends BottomSheetDialogFragment {
 
     Button playBtn;
     SeekBar positionBar;
@@ -34,7 +37,8 @@ public class MediaPlayerFragment extends Fragment {
 
     ImageView backBtn;
 
-    public static MediaPlayerFragment newInstance(Constructor constructor) {
+
+    public static MediaPlayerFragment newInstance(SongConstructor constructor) {
         MediaPlayerFragment fragnent = new MediaPlayerFragment();
         Bundle argument = new Bundle();
         argument.putSerializable("Constructor", constructor);
@@ -42,7 +46,9 @@ public class MediaPlayerFragment extends Fragment {
         return fragnent;
     }
 
-
+    public interface BottomSheetListener {
+        void onButtonClicked(String text);
+    }
 
 
     @Nullable
@@ -52,7 +58,7 @@ public class MediaPlayerFragment extends Fragment {
         //создаем главную вьюшку
         View view = inflater.inflate(R.layout.media_player_fragment, container, false);
         //настраиваем
-        final Constructor constructor = (Constructor) getArguments().getSerializable("Constructor");
+        final SongConstructor  constructor = (SongConstructor ) getArguments().getSerializable("Constructor");
 
         backBtn = view.findViewById(R.id.backBtn);
 

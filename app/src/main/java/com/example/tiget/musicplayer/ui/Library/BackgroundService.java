@@ -1,4 +1,4 @@
-package com.example.tiget.musicplayer;
+package com.example.tiget.musicplayer.ui.Library;
 
 import android.app.Service;
 import android.content.ComponentName;
@@ -10,7 +10,8 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
+
+
 
 public class BackgroundService extends Service {
 
@@ -20,12 +21,10 @@ public class BackgroundService extends Service {
     public static MediaPlayer mMediaPlayer;
 
 
-
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
-
 
 
     @Override
@@ -33,7 +32,7 @@ public class BackgroundService extends Service {
         context = getApplicationContext();
         //TODO
 
-        AudioManager am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
 // Request audio focus for playback
         int result = am.requestAudioFocus(focusChangeListener,
@@ -41,8 +40,6 @@ public class BackgroundService extends Service {
                 AudioManager.STREAM_MUSIC,
 // Request permanent focus.
                 AudioManager.AUDIOFOCUS_GAIN);
-
-
 
 
         final String SongUri = RecyclerViewAdapter.SongUri;//Получаем ссылку на песню
@@ -55,17 +52,16 @@ public class BackgroundService extends Service {
         mMediaPlayer.start();//Запускаем
 
 
-
     }
 
 
     private AudioManager.OnAudioFocusChangeListener focusChangeListener =
             new AudioManager.OnAudioFocusChangeListener() {
                 public void onAudioFocusChange(int focusChange) {
-                    AudioManager am =(AudioManager)getSystemService(Context.AUDIO_SERVICE);
+                    AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
                     switch (focusChange) {
 
-                        case (AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) :
+                        case (AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK):
                             // Lower the volume while ducking.
                             mMediaPlayer.setVolume(0.2f, 0.2f);
                             Log.v("focus", "can duck");
@@ -75,33 +71,31 @@ public class BackgroundService extends Service {
                             break;
 
 
-                        case (AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) :
+                        case (AudioManager.AUDIOFOCUS_LOSS_TRANSIENT):
                             mMediaPlayer.pause();
                             Log.v("focus", "loss transient");
                             break;
 
 
-                            //Если что-то другое включилось
-                        case (AudioManager.AUDIOFOCUS_LOSS) :
+                        //Если что-то другое включилось
+                        case (AudioManager.AUDIOFOCUS_LOSS):
                             mMediaPlayer.pause();
-                            ComponentName component =new ComponentName(BackgroundService.this,BackgroundService.class);
+                            ComponentName component = new ComponentName(BackgroundService.this, BackgroundService.class);
                             am.unregisterMediaButtonEventReceiver(component);
                             break;
 
 
-                        case (AudioManager.AUDIOFOCUS_GAIN) :
+                        case (AudioManager.AUDIOFOCUS_GAIN):
                             // Return the volume to normal and resume if paused.
                             mMediaPlayer.setVolume(1f, 1f);
                             mMediaPlayer.start();
                             Log.v("focus", "gain");
                             break;
-                        default: break;
+                        default:
+                            break;
                     }
                 }
             };
-
-
-
 
 
     @Override
@@ -113,6 +107,4 @@ public class BackgroundService extends Service {
     public void onStart(Intent intent, int startid) {
 
     }
-
-
 }
