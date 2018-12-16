@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.example.tiget.musicplayer.R;
 
 
-public class MediaPlayerFragment extends BottomSheetDialogFragment {
+public class MediaPlayerFragment extends Fragment {
 
     Button playBtn;
     SeekBar positionBar;
@@ -46,9 +46,7 @@ public class MediaPlayerFragment extends BottomSheetDialogFragment {
         return fragnent;
     }
 
-    public interface BottomSheetListener {
-        void onButtonClicked(String text);
-    }
+
 
 
     @Nullable

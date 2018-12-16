@@ -11,6 +11,10 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
+import static android.content.ContentValues.TAG;
 
 
 public class BackgroundService extends Service {
@@ -19,6 +23,7 @@ public class BackgroundService extends Service {
     public Handler handler = null;
     public static Runnable runnable = null;
     public static MediaPlayer mMediaPlayer;
+    private final String mTAG = "AudioFocus";
 
 
     @Override
@@ -41,10 +46,23 @@ public class BackgroundService extends Service {
 // Request permanent focus.
                 AudioManager.AUDIOFOCUS_GAIN);
 
+/*
+        final Handler handler = new Handler();
+        final Runnable Update = new Runnable() {
+            public void run() {
 
+
+            }
+        };
+        Timer swipeTimer = new Timer();
+        swipeTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(Update);
+            }
+        }, 1000, 1000);
+        */
         final String SongUri = RecyclerViewAdapter.SongUri;//Получаем ссылку на песню
-
-        mMediaPlayer = null;
         mMediaPlayer = MediaPlayer.create(context, Uri.parse(SongUri));//Создаем MediaPlayer
         mMediaPlayer.setLooping(false);//Песня не будет повторяться
         mMediaPlayer.seekTo(0);//Песня влючится на 0й секунде
@@ -63,36 +81,33 @@ public class BackgroundService extends Service {
 
                         case (AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK):
                             // Lower the volume while ducking.
-                            mMediaPlayer.setVolume(0.2f, 0.2f);
-                            Log.v("focus", "can duck");
-
-
+                            Log.v(mTAG, "can duck");
                             mMediaPlayer.start();
                             break;
 
 
                         case (AudioManager.AUDIOFOCUS_LOSS_TRANSIENT):
+                            Log.v(mTAG, "loss transient");
                             mMediaPlayer.pause();
-                            Log.v("focus", "loss transient");
                             break;
 
 
                         //Если что-то другое включилось
                         case (AudioManager.AUDIOFOCUS_LOSS):
-                            mMediaPlayer.pause();
+                            Log.v(mTAG, "Loss");
                             ComponentName component = new ComponentName(BackgroundService.this, BackgroundService.class);
                             am.unregisterMediaButtonEventReceiver(component);
+                            mMediaPlayer.pause();
                             break;
 
-
+                        //Если аудиоканал свободен(он занят, даже если другая музыка стоит на паузе)
                         case (AudioManager.AUDIOFOCUS_GAIN):
                             // Return the volume to normal and resume if paused.
-                            mMediaPlayer.setVolume(1f, 1f);
+                            Log.v(mTAG, "gain");
                             mMediaPlayer.start();
-                            Log.v("focus", "gain");
                             break;
-                        default:
-                            break;
+
+
                     }
                 }
             };

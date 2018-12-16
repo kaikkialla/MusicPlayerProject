@@ -101,11 +101,6 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
 
 
         holder.previewSongController.setVisibility(View.GONE);
-
-
-
-
-
         SongUri = constructor.SongUri;
 
 
@@ -124,13 +119,48 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
 */
 
 
-        /*
-        TODO
-        Не работает смена песни по id
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
 
-         */
+            @Override
+            public void onClick(View view) {
+
+                if(BackgroundService.mMediaPlayer != null) {
+
+                    if(SongUri != constructor.SongUri) {
+                        BackgroundService.mMediaPlayer.reset();//Сбрасываем текущую песню
+                        try {
+                            BackgroundService.mMediaPlayer.setDataSource(activity, Uri.parse(constructor.SongUri));//Включаем ту, на которую нажали
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        try {
+                            BackgroundService.mMediaPlayer.prepare();//Что-то делаем, не знаю что, но надо
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        BackgroundService.mMediaPlayer.start();//Запускаем
+                        showMiniMediaFragment(constructor);
+                        SongUri = constructor.SongUri;
+                    } else if(SongUri == constructor.SongUri) {
+                        showMediaFragment(constructor);
+                    }
 
 
+                } else {
+                    SongUri = constructor.SongUri;
+                    activity.startService(new Intent(activity, BackgroundService.class));
+                    showMiniMediaFragment(constructor);
+                }
+            }
+
+        });
+
+
+
+
+/*
         //Нажатие на тело песни(без превьюшки)
         holder.mainContainer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,11 +171,9 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
 
                 } else if(BackgroundService.mMediaPlayer != null) {
 
-
                     //Если другой элемент, то меняем песню и показываем минифрагмент
                     if(SongUri != constructor.SongUri) {
 
-                        Log.e("a", String.valueOf(position));
                         BackgroundService.mMediaPlayer.reset();//Сбрасываем текущую песню
                         try {
                             BackgroundService.mMediaPlayer.setDataSource(activity, Uri.parse(constructor.SongUri));//Включаем ту, на которую нажали
@@ -161,10 +189,7 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
                         ShowMiniMediaFragment(constructor);//Показываем мини фрамент
 
                         currentPos = position;
-
-
                     }
-
 
                     //Если тот-же самый
                     else if(SongUri == constructor.SongUri) {
@@ -176,12 +201,9 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
                         }
                     }
                 }
-
-
-
             }
         });
-
+*/
 
 
         /**
@@ -233,9 +255,9 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
     }
 
 
-    public void ShowMiniMediaFragment(SongConstructor  constructor) {
+    public void showMiniMediaFragment(SongConstructor  constructor) {
         //Создаем сервис для действий в фоновом режиме
-        activity.startService(new Intent(activity, BackgroundService.class));
+        //activity.startService(new Intent(activity, BackgroundService.class));
         //открываем фрагмент с плеером внизу экрана
         MiniMediaPlayerFragment fragment = MiniMediaPlayerFragment.newInstance(constructor);
 
@@ -243,13 +265,11 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
     }
 
 
-    //метод, рисующий фрагмент с иформацией о валюте
+
     private void showMediaFragment(SongConstructor  constructor) {
 
-        //MediaPlayerFragment bottomSheet = new MediaPlayerFragment.newInstance(constructor);
         MediaPlayerFragment fragment = MediaPlayerFragment.newInstance(constructor);
-        fragment.show(activity.getSupportFragmentManager(), "BottomSheet");
-        //activity.getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, fragment).commit();
+        activity.getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, fragment).commit();
     }
 
 

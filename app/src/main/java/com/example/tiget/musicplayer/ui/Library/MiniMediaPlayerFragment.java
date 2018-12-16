@@ -79,7 +79,7 @@ public class MiniMediaPlayerFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 MediaPlayerFragment fragment = MediaPlayerFragment.newInstance(constructor);
-                getActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(R.animator.media_player_fade_in, R.animator.media_player_fade_out).replace(R.id.FrameLayout, fragment).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, fragment).commit();
             }
         });
 
