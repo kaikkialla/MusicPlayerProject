@@ -19,6 +19,9 @@ import static android.content.ContentValues.TAG;
 
 public class BackgroundService extends Service {
 
+    public static final String ACTION_PLAY  = "ACTION_PLAY";
+    public static final String ACTION_PAUSE = "ACTION_PAUSE";
+
     public Context context = this;
     public Handler handler = null;
     public static Runnable runnable = null;
@@ -37,14 +40,7 @@ public class BackgroundService extends Service {
         context = getApplicationContext();
         //TODO
 
-        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-
-// Request audio focus for playback
-        int result = am.requestAudioFocus(focusChangeListener,
-// Use the music stream.
-                AudioManager.STREAM_MUSIC,
-// Request permanent focus.
-                AudioManager.AUDIOFOCUS_GAIN);
+        requestFocus();
 
 /*
         final Handler handler = new Handler();
@@ -118,8 +114,50 @@ public class BackgroundService extends Service {
         handler.removeCallbacks(runnable);//заканчивает процесс при выключении приложения(Можно убрать, тогда будет работать всегда)
     }
 
+    // с Service нужно общаться через интенты, а не через static mMediaPlayer, иначе смысл использования Service теряется
+    // интенты, которые ты отправил - придут в этот метод
     @Override
-    public void onStart(Intent intent, int startid) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent.getAction() != null) {
+            if (intent.getAction().equals(ACTION_PLAY)) {
+                // фокус нужно запрашивать ПЕРЕД КАЖДЫМ PLAY
+                // поэтому у тебя был баг, ты же только один раз запрашивал
+                requestFocus();
+                mMediaPlayer.start();
+            } else if (intent.getAction().equals(ACTION_PAUSE)) {
+                mMediaPlayer.pause();
+            }
+        }
 
+        return START_STICKY_COMPATIBILITY;
     }
+
+    // например, допустим, для продолжения воспроизведения Service должен получить интенет с ACTION_PLAY в action
+    // этот метод как раз такой создаёт
+    // (ACTION_PLAY = "ACTION_PLAY", выше объявлена константа)
+    public static void play(Context context) {
+        final Intent intent = new Intent(context, BackgroundService.class);
+        intent.setAction(ACTION_PLAY);
+        context.startService(intent);
+    }
+
+    // для паузы - ACTION_PAUSE
+    public static void pause(Context context) {
+        final Intent intent = new Intent(context, BackgroundService.class);
+        intent.setAction(ACTION_PAUSE);
+        context.startService(intent);
+    }
+
+    // для изменения громкости, например - с ACTION_SET_VOLUME и через putIntExtra добавить громкость
+    // и так далее
+
+    private void requestFocus() {
+        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        int result = am.requestAudioFocus(focusChangeListener,
+                AudioManager.STREAM_MUSIC,
+                AudioManager.AUDIOFOCUS_GAIN);
+        // в result тебе может вернуться AUDIOFOCUS_REQUEST_FAILED, в этом случае звук не нужно проигрывать
+        // см, например,
+    }
+
 }
