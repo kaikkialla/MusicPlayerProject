@@ -141,10 +141,10 @@ public class MediaPlayerFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (BackgroundService.mMediaPlayer.isPlaying()) {
-                    BackgroundService.mMediaPlayer.pause();
+                    BackgroundService.pause(getContext());
                     playBtn.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp);
                 } else if (!BackgroundService.mMediaPlayer.isPlaying()) {
-                    BackgroundService.mMediaPlayer.start();
+                    BackgroundService.play(getContext());
                     playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp);
                 }
 
