@@ -1,13 +1,12 @@
 package com.example.tiget.musicplayer.ui.Library;
 
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +21,7 @@ import com.example.tiget.musicplayer.R;
 
 public class MediaPlayerFragment extends Fragment {
 
-    Button playBtn;
+    ImageView playBtn;
     SeekBar positionBar;
     SeekBar volumeBar;
 
@@ -33,7 +32,6 @@ public class MediaPlayerFragment extends Fragment {
     ImageView SongImage;
 
 
-    //int totalTime;
 
     ImageView backBtn;
 
@@ -51,12 +49,12 @@ public class MediaPlayerFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final Context context = getContext();
         //создаем главную вьюшку
         View view = inflater.inflate(R.layout.media_player_fragment, container, false);
         //настраиваем
-        final SongConstructor  constructor = (SongConstructor ) getArguments().getSerializable("Constructor");
+        final SongConstructor  constructor = (SongConstructor) getArguments().getSerializable("Constructor");
 
         backBtn = view.findViewById(R.id.backBtn);
 
@@ -140,13 +138,7 @@ public class MediaPlayerFragment extends Fragment {
         playBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (BackgroundService.mMediaPlayer.isPlaying()) {
-                    BackgroundService.mMediaPlayer.pause();
-                    playBtn.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp);
-                } else if (!BackgroundService.mMediaPlayer.isPlaying()) {
-                    BackgroundService.mMediaPlayer.start();
-                    playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp);
-                }
+                MiniMediaPlayerFragment.checkPlayButtonPressedState(playBtn);
 
             }
         });
@@ -162,7 +154,7 @@ public class MediaPlayerFragment extends Fragment {
                         msg.what = BackgroundService.mMediaPlayer.getCurrentPosition();
                         handler.sendMessage(msg);
                         Thread.sleep(1000);
-                    } catch (InterruptedException e) {
+                    } catch (InterruptedException ignored) {
                     }
                 }
             }
@@ -176,6 +168,11 @@ public class MediaPlayerFragment extends Fragment {
     }
 
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        MiniMediaPlayerFragment.checkPlayButtonState(playBtn);
+    }
 
     @Override
     public void onAttach(Context context) {

@@ -86,7 +86,7 @@
 
         </LinearLayout>
 
-        <Button
+        <ImageView
             android:id="@+id/playBtnClick"
             android:layout_width="30dp"
             android:layout_height="30dp"

@@ -4,6 +4,7 @@ package com.example.tiget.musicplayer.ui.Library;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,7 +13,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,6 +60,8 @@ public class PlaylistFragment extends Fragment {
 
     }
 
+
+
 }
 
 
@@ -74,6 +76,9 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
     ProgressBar progressBar;
     int currentPos = -1;//Текущая песня
 
+    public static final String ACTION_PLAY  = "ACTION_PLAY";
+    public static final String ACTION_PAUSE = "ACTION_PAUSE";
+
 
     public RecyclerViewAdapter(MainActivity activity) {
         this.activity = activity;
@@ -83,7 +88,7 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
     @Override
     public PlaylistViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(activity);
-        View v = inflater.inflate(R.layout.library_recycler_view_row, parent, false );
+        View v = inflater.inflate(R.layout.song_item, parent, false );
         PlaylistViewHolder vh = new PlaylistViewHolder(v);
 
         return vh;
@@ -99,9 +104,9 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
         holder.AuthorName.setText(constructor.AuthorName);
         holder.SongPreview.setImageResource(constructor.SongPreview);
 
-
-        holder.previewSongController.setVisibility(View.GONE);
         SongUri = constructor.SongUri;
+        holder.previewSongController.setVisibility(View.GONE);
+
 
 
 /*Из-за этого лагает, надо чем-нибудь заменить
@@ -123,10 +128,11 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
 
             @Override
             public void onClick(View view) {
-
+                //Если что-то уже играет
                 if(BackgroundService.mMediaPlayer != null) {
 
                     if(SongUri != constructor.SongUri) {
+
                         BackgroundService.mMediaPlayer.reset();//Сбрасываем текущую песню
                         try {
                             BackgroundService.mMediaPlayer.setDataSource(activity, Uri.parse(constructor.SongUri));//Включаем ту, на которую нажали
@@ -147,11 +153,15 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
                         showMediaFragment(constructor);
                     }
 
+                //При первом нажатии на песню
+                } else  if(BackgroundService.mMediaPlayer == null){
 
-                } else {
+                    holder.previewSongController.setVisibility(View.GONE);
+
                     SongUri = constructor.SongUri;
                     activity.startService(new Intent(activity, BackgroundService.class));
                     showMiniMediaFragment(constructor);
+
                 }
             }
 

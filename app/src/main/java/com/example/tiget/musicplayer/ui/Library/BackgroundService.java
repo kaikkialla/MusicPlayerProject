@@ -11,10 +11,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
-import static android.content.ContentValues.TAG;
+import com.example.tiget.musicplayer.R;
 
 
 public class BackgroundService extends Service {
@@ -23,7 +20,11 @@ public class BackgroundService extends Service {
     public Handler handler = null;
     public static Runnable runnable = null;
     public static MediaPlayer mMediaPlayer;
-    private final String mTAG = "AudioFocus";
+    private final String AUDIO_FOCUS_TAG = "BSJOOHSVMQHNFUV";
+
+    public static final String ACTION_PLAY  = "ACTION_PLAY";
+    public static final String ACTION_PAUSE = "ACTION_PAUSE";
+    public static Boolean MediaPlayerState;
 
 
     @Override
@@ -37,31 +38,8 @@ public class BackgroundService extends Service {
         context = getApplicationContext();
         //TODO
 
-        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        requestFocus();
 
-// Request audio focus for playback
-        int result = am.requestAudioFocus(focusChangeListener,
-// Use the music stream.
-                AudioManager.STREAM_MUSIC,
-// Request permanent focus.
-                AudioManager.AUDIOFOCUS_GAIN);
-
-/*
-        final Handler handler = new Handler();
-        final Runnable Update = new Runnable() {
-            public void run() {
-
-
-            }
-        };
-        Timer swipeTimer = new Timer();
-        swipeTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                handler.post(Update);
-            }
-        }, 1000, 1000);
-        */
         final String SongUri = RecyclerViewAdapter.SongUri;//Получаем ссылку на песню
         mMediaPlayer = MediaPlayer.create(context, Uri.parse(SongUri));//Создаем MediaPlayer
         mMediaPlayer.setLooping(false);//Песня не будет повторяться
@@ -72,6 +50,28 @@ public class BackgroundService extends Service {
 
     }
 
+    public void onDestroy() {
+        handler.removeCallbacks(runnable);//заканчивает процесс при выключении приложения(Можно убрать, тогда будет работать всегда)
+    }
+
+
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent.getAction() != null) {
+            if (intent.getAction().equals(ACTION_PLAY)) {
+                // фокус нужно запрашивать ПЕРЕД КАЖДЫМ PLAY
+                // поэтому у тебя был баг, ты же только один раз запрашивал
+                requestFocus();
+                mMediaPlayer.start();
+                //MediaPlayerState = true;
+            } else if (intent.getAction().equals(ACTION_PAUSE)) {
+                mMediaPlayer.pause();
+                //MediaPlayerState = false;
+            }
+        }
+
+        return START_STICKY_COMPATIBILITY;
+    }
+
 
     private AudioManager.OnAudioFocusChangeListener focusChangeListener =
             new AudioManager.OnAudioFocusChangeListener() {
@@ -79,32 +79,40 @@ public class BackgroundService extends Service {
                     AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
                     switch (focusChange) {
 
+
                         case (AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK):
                             // Lower the volume while ducking.
-                            Log.v(mTAG, "can duck");
-                            mMediaPlayer.start();
+                            Log.v(AUDIO_FOCUS_TAG, "can duck");
+                            //mMediaPlayer.start();
                             break;
 
 
                         case (AudioManager.AUDIOFOCUS_LOSS_TRANSIENT):
-                            Log.v(mTAG, "loss transient");
+                            Log.v(AUDIO_FOCUS_TAG, "loss transient");
                             mMediaPlayer.pause();
                             break;
 
 
                         //Если что-то другое включилось
                         case (AudioManager.AUDIOFOCUS_LOSS):
-                            Log.v(mTAG, "Loss");
                             ComponentName component = new ComponentName(BackgroundService.this, BackgroundService.class);
-                            am.unregisterMediaButtonEventReceiver(component);
+
+                            if (am != null) {
+                                am.unregisterMediaButtonEventReceiver(component);
+                            }
+                            MiniMediaPlayerFragment.playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp);//Меняем иконку
                             mMediaPlayer.pause();
+
                             break;
 
                         //Если аудиоканал свободен(он занят, даже если другая музыка стоит на паузе)
-                        case (AudioManager.AUDIOFOCUS_GAIN):
+                        case (AudioManager.AUDIOFOCUS_REQUEST_GRANTED):
                             // Return the volume to normal and resume if paused.
-                            Log.v(mTAG, "gain");
-                            mMediaPlayer.start();
+                            Log.v(AUDIO_FOCUS_TAG, "gain");
+                            //if(MediaPlayerState == true) {
+                             //   mMediaPlayer.start();
+                            //} else mMediaPlayer.pause();
+
                             break;
 
 
@@ -113,13 +121,28 @@ public class BackgroundService extends Service {
             };
 
 
-    @Override
-    public void onDestroy() {
-        handler.removeCallbacks(runnable);//заканчивает процесс при выключении приложения(Можно убрать, тогда будет работать всегда)
+
+
+    //Метод для возобновления музыки, вызывается из активности
+    public static void resume(Context context) {
+        final Intent intent = new Intent(context, BackgroundService.class);
+        intent.setAction(ACTION_PLAY);
+        context.startService(intent);
     }
 
-    @Override
-    public void onStart(Intent intent, int startid) {
+    //Метод для паузы музыки, вызывается из активности
+    public static void pause(Context context) {
+        final Intent intent = new Intent(context, BackgroundService.class);
+        intent.setAction(ACTION_PAUSE);
+        context.startService(intent);
+    }
 
+    private void requestFocus() {
+        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        int result = am.requestAudioFocus(focusChangeListener,
+                AudioManager.STREAM_MUSIC,
+                AudioManager.AUDIOFOCUS_GAIN);
+        // в result тебе может вернуться AUDIOFOCUS_REQUEST_FAILED, в этом случае звук не нужно проигрывать
+        // см, например,
     }
 }
