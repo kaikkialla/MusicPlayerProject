@@ -1,4 +1,4 @@
-package com.example.tiget.musicplayer.ui.Library;
+package com.example.tiget.musicplayer.ui.UserLibrary;
 
 
 import android.content.Context;
@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,7 +30,7 @@ public class MiniMediaPlayerFragment extends Fragment {
 
 
 
-    public static MiniMediaPlayerFragment newInstance(SongConstructor constructor) {
+    public static MiniMediaPlayerFragment newInstance(UserLibSong constructor) {
         MiniMediaPlayerFragment fragnent = new MiniMediaPlayerFragment();
         Bundle argument = new Bundle();
         argument.putSerializable("Constructor", constructor);
@@ -59,7 +58,7 @@ public class MiniMediaPlayerFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final SongConstructor  constructor = (SongConstructor ) getArguments().getSerializable("Constructor");
+        final UserLibSong constructor = (UserLibSong) getArguments().getSerializable("Constructor");
         String SongName = constructor.SongName;
         int SongImageResourceId = constructor.SongPreview;
 

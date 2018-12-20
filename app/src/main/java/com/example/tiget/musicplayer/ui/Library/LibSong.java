@@ -2,7 +2,7 @@ package com.example.tiget.musicplayer.ui.Library;
 
 import java.io.Serializable;
 
-public class SongConstructor implements Serializable {
+public class LibSong implements Serializable {
     public long id;
     public String type;
     public String AuthorName;
@@ -11,7 +11,7 @@ public class SongConstructor implements Serializable {
     public int SongPreview;
     boolean explicit;
 
-    public SongConstructor(long id, String type, String AuthorName, String SongName, String SongUri, int SongPreview, boolean explicit){
+    public LibSong(long id, String type, String AuthorName, String SongName, String SongUri, int SongPreview, boolean explicit){
         this.id = id;
         this.type = type;
         this.AuthorName = AuthorName;

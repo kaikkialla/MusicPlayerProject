@@ -14,6 +14,27 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             app:layout_scrollFlags="scroll|enterAlways|snap">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Your playlist"
+                    android:layout_centerInParent="true"
+                    android:textSize="24dp"
+                    android:textColor="#FFF"/>
+
+                <ImageView
+                    android:id="@+id/addSong"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/ic_add_black_24dp"/>
+            </RelativeLayout>
         </Toolbar>
     </android.support.design.widget.AppBarLayout>
 

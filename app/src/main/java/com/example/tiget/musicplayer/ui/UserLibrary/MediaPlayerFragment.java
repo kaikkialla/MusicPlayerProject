@@ -1,4 +1,4 @@
-package com.example.tiget.musicplayer.ui.Library;
+package com.example.tiget.musicplayer.ui.UserLibrary;
 
 
 import android.content.Context;
@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -36,7 +35,7 @@ public class MediaPlayerFragment extends Fragment {
     ImageView backBtn;
 
 
-    public static MediaPlayerFragment newInstance(SongConstructor constructor) {
+    public static MediaPlayerFragment newInstance(UserLibSong constructor) {
         MediaPlayerFragment fragnent = new MediaPlayerFragment();
         Bundle argument = new Bundle();
         argument.putSerializable("Constructor", constructor);
@@ -54,7 +53,7 @@ public class MediaPlayerFragment extends Fragment {
         //создаем главную вьюшку
         View view = inflater.inflate(R.layout.media_player_fragment, container, false);
         //настраиваем
-        final SongConstructor  constructor = (SongConstructor) getArguments().getSerializable("Constructor");
+        final UserLibSong constructor = (UserLibSong) getArguments().getSerializable("Constructor");
 
         backBtn = view.findViewById(R.id.backBtn);
 
