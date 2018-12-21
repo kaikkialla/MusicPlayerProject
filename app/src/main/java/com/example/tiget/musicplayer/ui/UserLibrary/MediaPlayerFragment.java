@@ -16,6 +16,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.tiget.musicplayer.R;
+import com.example.tiget.musicplayer.ui.BackgroundService;
 
 
 public class MediaPlayerFragment extends Fragment {
@@ -60,7 +61,6 @@ public class MediaPlayerFragment extends Fragment {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //RecyclerViewAdapter.mMediaPlayer.stop();
 
                 PlaylistFragment recyclerViewFragment = PlaylistFragment.newInstance(constructor);
                 MediaPlayerFragment mediaPlayerFragment = MediaPlayerFragment.newInstance(constructor);

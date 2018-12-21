@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tiget.musicplayer.R;
+import com.example.tiget.musicplayer.ui.BackgroundService;
 
 
 public class MiniMediaPlayerFragment extends Fragment {

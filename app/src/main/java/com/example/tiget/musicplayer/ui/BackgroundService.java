@@ -1,4 +1,4 @@
-package com.example.tiget.musicplayer.ui.UserLibrary;
+package com.example.tiget.musicplayer.ui;
 
 import android.app.Service;
 import android.content.ComponentName;
@@ -10,8 +10,12 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.tiget.musicplayer.R;
+import com.example.tiget.musicplayer.ui.Library.LibraryAdapter;
+import com.example.tiget.musicplayer.ui.UserLibrary.MiniMediaPlayerFragment;
+import com.example.tiget.musicplayer.ui.UserLibrary.RecyclerViewAdapter;
 
 
 public class BackgroundService extends Service {
@@ -24,8 +28,7 @@ public class BackgroundService extends Service {
 
     public static final String ACTION_PLAY  = "ACTION_PLAY";
     public static final String ACTION_PAUSE = "ACTION_PAUSE";
-    public static Boolean MediaPlayerState;
-
+    String SongUri;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -39,13 +42,23 @@ public class BackgroundService extends Service {
         //TODO
 
         requestFocus();
+        if(RecyclerViewAdapter.SongUri == null){
+            SongUri = LibraryAdapter.SongUri;//Получаем ссылку на песню
+        } else if(LibraryAdapter.SongUri == null) {
+            SongUri = RecyclerViewAdapter.SongUri;
+        }
 
-        final String SongUri = RecyclerViewAdapter.SongUri;//Получаем ссылку на песню
-        mMediaPlayer = MediaPlayer.create(context, Uri.parse(SongUri));//Создаем MediaPlayer
-        mMediaPlayer.setLooping(false);//Песня не будет повторяться
-        mMediaPlayer.seekTo(0);//Песня влючится на 0й секунде
-        mMediaPlayer.setVolume(0.3f, 0.7f);//Начальная громкость
-        mMediaPlayer.start();//Запускаем
+
+        try{
+            mMediaPlayer = MediaPlayer.create(context, Uri.parse(SongUri));//Создаем MediaPlayer
+            mMediaPlayer.setLooping(false);//Песня не будет повторяться
+            mMediaPlayer.seekTo(0);//Песня влючится на 0й секунде
+            mMediaPlayer.setVolume(0.3f, 0.7f);//Начальная громкость
+            mMediaPlayer.start();//Запускаем
+        } catch (Exception e) {
+            Toast.makeText(context, "Unable to play this song", Toast.LENGTH_SHORT).show();
+        }
+
 
 
     }
@@ -123,7 +136,7 @@ public class BackgroundService extends Service {
 
 
 
-    //Метод для возобновления музыки, вызывается из активности
+
     public static void resume(Context context) {
         final Intent intent = new Intent(context, BackgroundService.class);
         intent.setAction(ACTION_PLAY);
@@ -136,6 +149,7 @@ public class BackgroundService extends Service {
         intent.setAction(ACTION_PAUSE);
         context.startService(intent);
     }
+
 
     private void requestFocus() {
         AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
