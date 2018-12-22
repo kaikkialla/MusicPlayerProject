@@ -17,6 +17,8 @@ import com.example.tiget.musicplayer.ui.Library.LibraryAdapter;
 import com.example.tiget.musicplayer.ui.UserLibrary.MiniMediaPlayerFragment;
 import com.example.tiget.musicplayer.ui.UserLibrary.RecyclerViewAdapter;
 
+import java.io.IOException;
+
 
 public class BackgroundService extends Service {
 
@@ -24,11 +26,13 @@ public class BackgroundService extends Service {
     public Handler handler = null;
     public static Runnable runnable = null;
     public static MediaPlayer mMediaPlayer;
-    private final String AUDIO_FOCUS_TAG = "BSJOOHSVMQHNFUV";
+    public static String mSongUri;
 
     public static final String ACTION_PLAY  = "ACTION_PLAY";
     public static final String ACTION_PAUSE = "ACTION_PAUSE";
-    String SongUri;
+    public static final String ACTION_SET_SONG = "ACTION_SET_SONG";
+    public static final String ACTION__CHANGE_SONG = "ACTION__CHANGE_SONG";
+
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -42,13 +46,15 @@ public class BackgroundService extends Service {
         //TODO
 
         requestFocus();
+
+        /*
         if(RecyclerViewAdapter.SongUri == null){
             SongUri = LibraryAdapter.SongUri;//Получаем ссылку на песню
         } else if(LibraryAdapter.SongUri == null) {
             SongUri = RecyclerViewAdapter.SongUri;
         }
-
-
+*/
+/*
         try{
             mMediaPlayer = MediaPlayer.create(context, Uri.parse(SongUri));//Создаем MediaPlayer
             mMediaPlayer.setLooping(false);//Песня не будет повторяться
@@ -58,7 +64,7 @@ public class BackgroundService extends Service {
         } catch (Exception e) {
             Toast.makeText(context, "Unable to play this song", Toast.LENGTH_SHORT).show();
         }
-
+*/
 
 
     }
@@ -76,10 +82,45 @@ public class BackgroundService extends Service {
                 requestFocus();
                 mMediaPlayer.start();
                 //MediaPlayerState = true;
+
+
             } else if (intent.getAction().equals(ACTION_PAUSE)) {
                 mMediaPlayer.pause();
                 //MediaPlayerState = false;
+
+
+            } else if(intent.getAction().equals(ACTION_SET_SONG)) {
+                try{
+                    mMediaPlayer = MediaPlayer.create(context, Uri.parse(mSongUri));//Создаем MediaPlayer
+                    mMediaPlayer.setLooping(false);//Песня не будет повторяться
+                    mMediaPlayer.seekTo(0);//Песня влючится на 0й секунде
+                    mMediaPlayer.setVolume(0.3f, 0.7f);//Начальная громкость
+                    mMediaPlayer.start();//Запускаем
+                } catch (Exception e) {
+                    Toast.makeText(context, "Unable to play this song", Toast.LENGTH_SHORT).show();
+                }
+
+
+            } else if(intent.getAction().equals(ACTION__CHANGE_SONG)) {
+                    mMediaPlayer.reset();//Сбрасываем текущую песню
+                    try {
+                        mMediaPlayer.setDataSource(context, Uri.parse(mSongUri));//Включаем ту, на которую нажали
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        mMediaPlayer.prepare();//Что-то делаем, не знаю что, но надо
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    mMediaPlayer.start();//Запускаем
             }
+
+
+
+
         }
 
         return START_STICKY_COMPATIBILITY;
@@ -95,13 +136,11 @@ public class BackgroundService extends Service {
 
                         case (AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK):
                             // Lower the volume while ducking.
-                            Log.v(AUDIO_FOCUS_TAG, "can duck");
                             //mMediaPlayer.start();
                             break;
 
 
                         case (AudioManager.AUDIOFOCUS_LOSS_TRANSIENT):
-                            Log.v(AUDIO_FOCUS_TAG, "loss transient");
                             mMediaPlayer.pause();
                             break;
 
@@ -121,7 +160,6 @@ public class BackgroundService extends Service {
                         //Если аудиоканал свободен(он занят, даже если другая музыка стоит на паузе)
                         case (AudioManager.AUDIOFOCUS_REQUEST_GRANTED):
                             // Return the volume to normal and resume if paused.
-                            Log.v(AUDIO_FOCUS_TAG, "gain");
                             //if(MediaPlayerState == true) {
                              //   mMediaPlayer.start();
                             //} else mMediaPlayer.pause();
@@ -133,6 +171,23 @@ public class BackgroundService extends Service {
                 }
             };
 
+
+
+    public static void setSong(Context context, String SongUri) {
+        final Intent intent = new Intent(context, BackgroundService.class);
+
+        intent.setAction(ACTION_SET_SONG);
+        mSongUri = SongUri;
+        context.startService(intent);
+    }
+
+
+    public static void changeSong(Context context, String SongUri) {
+        final Intent intent = new Intent(context, BackgroundService.class);
+        intent.setAction(ACTION__CHANGE_SONG);
+        mSongUri = SongUri;
+        context.startService(intent);
+    }
 
 
 

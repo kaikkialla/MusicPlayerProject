@@ -102,20 +102,7 @@ public class LibraryAdapter extends RecyclerView.Adapter<ViewHolder> {
 
                     if(SongUri != constructor.SongUri) {
 
-                        BackgroundService.mMediaPlayer.reset();//Сбрасываем текущую песню
-                        try {
-                            BackgroundService.mMediaPlayer.setDataSource(activity, Uri.parse(constructor.SongUri));//Включаем ту, на которую нажали
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        try {
-                            BackgroundService.mMediaPlayer.prepare();//Что-то делаем, не знаю что, но надо
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        BackgroundService.mMediaPlayer.start();//Запускаем
+                        BackgroundService.changeSong(activity, constructor.SongUri);
                         showMiniMediaFragment(constructor);
                         SongUri = constructor.SongUri;
                     } else if(SongUri == constructor.SongUri) {
@@ -126,9 +113,9 @@ public class LibraryAdapter extends RecyclerView.Adapter<ViewHolder> {
                 } else  if(BackgroundService.mMediaPlayer == null){
 
                     holder.previewSongController.setVisibility(View.GONE);
-
+                    BackgroundService.setSong(activity, constructor.SongUri);
                     SongUri = constructor.SongUri;
-                    activity.startService(new Intent(activity, BackgroundService.class));
+                    //activity.startService(new Intent(activity, BackgroundService.class));
                     showMiniMediaFragment(constructor);
 
                 }
