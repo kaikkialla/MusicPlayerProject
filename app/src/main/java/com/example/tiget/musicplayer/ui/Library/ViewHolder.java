@@ -35,7 +35,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
 
         this.itemView = itemView;
         AuthorName = itemView.findViewById(R.id.AuthorName);
-        SongLenght = itemView.findViewById(R.id.SongsLength);
+        SongLenght = itemView.findViewById(R.id.SongInfo);
         SongName = itemView.findViewById(R.id.SongName);
         SongPreview = itemView.findViewById(R.id.preview);
         progressBar = itemView.findViewById(R.id.progressBar);

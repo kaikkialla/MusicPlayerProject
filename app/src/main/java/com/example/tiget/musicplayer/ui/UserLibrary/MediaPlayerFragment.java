@@ -17,10 +17,12 @@ import android.widget.TextView;
 
 import com.example.tiget.musicplayer.R;
 import com.example.tiget.musicplayer.ui.BackgroundService;
+import com.example.tiget.musicplayer.ui.MainActivity;
+import com.example.tiget.musicplayer.ui.voids;
 
 
 public class MediaPlayerFragment extends Fragment {
-
+    Context context;
     ImageView playBtn;
     SeekBar positionBar;
     SeekBar volumeBar;
@@ -29,9 +31,12 @@ public class MediaPlayerFragment extends Fragment {
     TextView remainingTimeLabel;
     TextView SongNameTextView;
     TextView AuthorNameTextView;
-    ImageView SongImage;
+    ImageView SongPreview;
 
 
+    String mSongName;
+    String mAuthorName;
+    int mPreviewImageResId;
 
     ImageView backBtn;
 
@@ -45,16 +50,14 @@ public class MediaPlayerFragment extends Fragment {
     }
 
 
-
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final Context context = getContext();
+        context = getContext();
         //создаем главную вьюшку
         View view = inflater.inflate(R.layout.media_player_fragment, container, false);
         //настраиваем
-        final UserLibSong constructor = (UserLibSong) getArguments().getSerializable("Constructor");
+        final UserLibSong song = (UserLibSong) getArguments().getSerializable("Constructor");
 
         backBtn = view.findViewById(R.id.backBtn);
 
@@ -62,17 +65,16 @@ public class MediaPlayerFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                PlaylistFragment recyclerViewFragment = PlaylistFragment.newInstance(constructor);
-                MediaPlayerFragment mediaPlayerFragment = MediaPlayerFragment.newInstance(constructor);
-                MiniMediaPlayerFragment miniMediaPlayer = MiniMediaPlayerFragment.newInstance(constructor);
-
+                PlaylistFragment recyclerViewFragment = PlaylistFragment.newInstance(song);
+                MediaPlayerFragment mediaPlayerFragment = MediaPlayerFragment.newInstance(song);
+                MiniMediaPlayerFragment miniMediaPlayer = MiniMediaPlayerFragment.newInstance(song);
 
 
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, recyclerViewFragment).commit();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.miniFrameLayout, miniMediaPlayer).commit();
-
             }
         });
+
 
 
         playBtn = view.findViewById(R.id.playBtnClick);
@@ -82,16 +84,16 @@ public class MediaPlayerFragment extends Fragment {
         remainingTimeLabel = view.findViewById(R.id.remainingTimeLabel);
         AuthorNameTextView = view.findViewById(R.id.AuthorNameTextView);
         SongNameTextView = view.findViewById(R.id.SongNameTextView);
-        SongImage = view.findViewById(R.id.SongImage);
+        SongPreview = view.findViewById(R.id.SongImage);
 
 
-        String SongName = constructor.SongName;
-        String AuthorName = constructor.AuthorName;
-        int SongImageResourseId = constructor.SongPreview;
+        mSongName = song.SongName;
+        mAuthorName = song.AuthorName;
+        mPreviewImageResId = song.SongPreview;
 
-        SongNameTextView.setText(SongName);
-        AuthorNameTextView.setText(AuthorName);
-        SongImage.setImageResource(SongImageResourseId);
+        SongNameTextView.setText(mSongName);
+        AuthorNameTextView.setText(mAuthorName);
+        SongPreview.setImageResource(mPreviewImageResId);
 
 
         //Настраиваем Position Bar
@@ -137,7 +139,7 @@ public class MediaPlayerFragment extends Fragment {
         playBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MiniMediaPlayerFragment.checkPlayButtonPressedState(playBtn);
+                voids.checkPlayButtonPressedState(context, playBtn);
 
             }
         });
@@ -170,7 +172,7 @@ public class MediaPlayerFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        MiniMediaPlayerFragment.checkPlayButtonState(playBtn);
+        voids.checkPlayButtonState(context, playBtn);
     }
 
     @Override

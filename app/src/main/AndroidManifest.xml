@@ -18,10 +18,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+
+
+
         <service   android:enabled="true"
             android:name=".ui.BackgroundService"
             android:exported="true"
             tools:ignore="WrongManifestParent"/>
+
+
         <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

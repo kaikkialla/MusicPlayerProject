@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -25,6 +26,7 @@ import com.example.tiget.musicplayer.R;
 import com.example.tiget.musicplayer.ui.BackgroundService;
 import com.example.tiget.musicplayer.ui.Library.LibraryFragment;
 import com.example.tiget.musicplayer.ui.MainActivity;
+import com.example.tiget.musicplayer.ui.voids;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,6 +45,7 @@ public class PlaylistFragment extends Fragment {
         return fragnent;
     }
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -50,39 +53,34 @@ public class PlaylistFragment extends Fragment {
         //создаем главную вьюшку
         View view = inflater.inflate(R.layout.user_lib_fragment, container, false);
 
-
         final RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         adapter = new RecyclerViewAdapter((MainActivity) getActivity());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(context, 1));
         //настраиваем
 
-
         mDatabase = new PlaylistDatabase(context);
         mDatabase.load();
-
-
 
 
         ImageView addSongBtn = view.findViewById(R.id.addSong);
         addSongBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, new LibraryFragment()).commit();
-            }
-        });
-
-        TextView clear = view.findViewById(R.id.clear);
-        clear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mDatabase.clear();
-                //adapter.swap(mDatabase.getSongs());
+                voids.showFragment(new LibraryFragment(), getActivity());
+                /*
+                getActivity()
+                        .getSupportFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left)
+                        .replace(R.id.FrameLayout, new LibraryFragment())
+                        .commit();
+                        */
             }
         });
         return view;
-
     }
+
 
     @Override
     public void onResume() {

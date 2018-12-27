@@ -30,7 +30,7 @@ public class PlaylistDatabase {
     public void load() {
         // получаем будильники в виде строки
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        final String s = preferences.getString("ALARMS", "");
+        final String s = preferences.getString("USER_LIB_SONGS", "");
         // десериализуем строку
         final Gson gson = new Gson();
         mSongs  = gson.fromJson(s, new TypeToken<List<UserLibSong>>(){}.getType());
@@ -53,7 +53,7 @@ public class PlaylistDatabase {
         final Gson gson = new Gson();
         final String s = gson.toJson(mSongs, new TypeToken<List<UserLibSong>>(){}.getType());
         // сохраняем по ключу ALARMS
-        editor.putString("ALARMS", s);
+        editor.putString("USER_LIB_SONGS", s);
         editor.apply();
     }
 
@@ -107,6 +107,19 @@ public class PlaylistDatabase {
             mChangeListener.onChange(mSongs);
         }
     }
+
+    /*
+    Метод возвращает true/false в зависимости от наличия/отсутствия песни в плейлисте. @param mSongUri - уникальная ссылка на песню.
+     */
+    public boolean alreadyExists(String mSongUri) {
+        for(UserLibSong song : mSongs) {
+            if(song.SongUri.equals(mSongUri)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public static void setChangeListener(ChangeListener listener) {
         mChangeListener = listener;

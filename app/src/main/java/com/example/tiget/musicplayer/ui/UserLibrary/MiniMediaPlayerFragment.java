@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import com.example.tiget.musicplayer.R;
 import com.example.tiget.musicplayer.ui.BackgroundService;
+import com.example.tiget.musicplayer.ui.MainActivity;
+import com.example.tiget.musicplayer.ui.voids;
 
 
 public class MiniMediaPlayerFragment extends Fragment {
@@ -74,7 +76,7 @@ public class MiniMediaPlayerFragment extends Fragment {
         playBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                checkPlayButtonPressedState(playBtn);
+                voids.checkPlayButtonPressedState(context, playBtn);
 
             }
         });
@@ -94,35 +96,10 @@ public class MiniMediaPlayerFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        checkPlayButtonState(playBtn);
+        voids.checkPlayButtonState(context, playBtn);
     }
 
-    public static void checkPlayButtonPressedState(ImageView imageView) {
-        if(BackgroundService.mMediaPlayer != null) {
-            if (BackgroundService.mMediaPlayer.isPlaying()) {
-                BackgroundService.pause(context);
-                imageView.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp);
-            } else if (!BackgroundService.mMediaPlayer.isPlaying()) {
-                BackgroundService.resume(context);
-                imageView.setBackgroundResource(R.drawable.ic_pause_black_24dp);
-            }
-        }
 
-    }
-
-    public static void checkPlayButtonState(ImageView imageView) {
-        Toast.makeText(context, "Resume", Toast.LENGTH_SHORT).show();
-        if(BackgroundService.mMediaPlayer != null) {
-            if (!BackgroundService.mMediaPlayer.isPlaying()) {
-                //BackgroundService.pause(context);
-                imageView.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp);
-            } else if (BackgroundService.mMediaPlayer.isPlaying()) {
-                //BackgroundService.resume(context);
-                imageView.setBackgroundResource(R.drawable.ic_pause_black_24dp);
-            }
-        }
-
-    }
 
 
 

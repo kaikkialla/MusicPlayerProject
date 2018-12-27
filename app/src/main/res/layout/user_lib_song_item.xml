@@ -81,20 +81,20 @@
                 android:textColor="@color/colorTextLight"/>
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/SongsLength"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="16dp"
-            android:textColor="@color/colorTextLight"
-            />
 
 
 
 
-
+    <TextView
+        android:id="@+id/SongInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="16dp"
+        android:textColor="@color/colorTextLight"
+        android:background="@drawable/ic_more_vert_black_24dp"
+        />
 
 
 
