@@ -70,7 +70,6 @@ public class MediaPlayerFragment extends Fragment {
                 //MiniMediaPlayerFragment miniMediaPlayer = MiniMediaPlayerFragment.newInstance(song);
 
 
-
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, new MusicFragment()).commit();
                 t.showMiniMediaFragment(song, getActivity());
             }
@@ -81,7 +80,7 @@ public class MediaPlayerFragment extends Fragment {
         playBtn = view.findViewById(R.id.playBtnClick);
         positionBar = view.findViewById(R.id.positionBar);
         volumeBar = view.findViewById(R.id.volumeBar);
-        elapsedTimeLabel = view.findViewById(R.id.elapsedTimaLable);
+        elapsedTimeLabel = view.findViewById(R.id.elapsedTimeLabel);
         remainingTimeLabel = view.findViewById(R.id.remainingTimeLabel);
         AuthorNameTextView = view.findViewById(R.id.AuthorNameTextView);
         SongNameTextView = view.findViewById(R.id.SongNameTextView);
@@ -140,7 +139,7 @@ public class MediaPlayerFragment extends Fragment {
         playBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                t.checkPlayButtonPressedState(context, playBtn);
+                t.checkPlayButtonPressedState(context, playBtn, 0);
 
             }
         });
@@ -173,7 +172,7 @@ public class MediaPlayerFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        t.checkPlayButtonState(context, playBtn);
+        t.checkPlayButtonState(context, playBtn, 0);
     }
 
     @Override

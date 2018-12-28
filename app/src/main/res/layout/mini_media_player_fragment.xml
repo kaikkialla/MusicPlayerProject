@@ -29,15 +29,35 @@
 
     </LinearLayout>
 
-
-
-    <ImageView
-        android:id="@+id/mini_play_btn"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:background="@drawable/ic_pause_black_24dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="64dp"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="8dp"
-        />
+        android:gravity="center_vertical">
+
+
+        <ImageView
+            android:id="@+id/mini_play_btn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/pause_gray"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="4dp"
+            />
+
+        <ImageView
+            android:id="@+id/mini_forward"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/next_song_gray"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="4dp"
+            />
+
+
+    </LinearLayout>
+
+
 </RelativeLayout>

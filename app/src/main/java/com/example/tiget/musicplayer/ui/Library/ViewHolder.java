@@ -17,10 +17,8 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     Context context;
     TextView AuthorName;
     TextView SongName;
-    TextView SongLenght;
+    TextView SongInfo;
     ImageView SongPreview;
-    ProgressBar progressBar;
-    ImageView previewStopPauseButton;
     RelativeLayout previewSongController;
 
 
@@ -35,12 +33,9 @@ public class ViewHolder extends RecyclerView.ViewHolder {
 
         this.itemView = itemView;
         AuthorName = itemView.findViewById(R.id.AuthorName);
-        SongLenght = itemView.findViewById(R.id.SongInfo);
+        SongInfo = itemView.findViewById(R.id.SongInfo);
         SongName = itemView.findViewById(R.id.SongName);
         SongPreview = itemView.findViewById(R.id.preview);
-        progressBar = itemView.findViewById(R.id.progressBar);
-        previewStopPauseButton = itemView.findViewById(R.id.preview_stop_play_button);
-        previewSongController = itemView.findViewById(R.id.preview_song_controller);
 
         playPausePreviewLayout = itemView.findViewById(R.id.play_pause_preview_layout);
         mainContainer = itemView.findViewById(R.id.main_container);

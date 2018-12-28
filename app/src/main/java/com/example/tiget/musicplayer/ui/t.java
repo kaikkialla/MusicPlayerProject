@@ -5,7 +5,6 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.tiget.musicplayer.R;
 import com.example.tiget.musicplayer.ui.Library.LibraryFragment;
@@ -27,27 +26,50 @@ public class t extends Activity {
     }
 
 
-    public static void checkPlayButtonPressedState(Context context, ImageView imageView) {
-        if(BackgroundService.mMediaPlayer != null) {
-            if (BackgroundService.mMediaPlayer.isPlaying()) {
-                BackgroundService.pause(context);
-                imageView.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp);
-            } else if (!BackgroundService.mMediaPlayer.isPlaying()) {
-                BackgroundService.resume(context);
-                imageView.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+    public static void checkPlayButtonPressedState(Context context, ImageView imageView, int color) {
+        if(color == 0) {
+            if (BackgroundService.mMediaPlayer != null) {
+                if (BackgroundService.mMediaPlayer.isPlaying()) {
+                    BackgroundService.pause(context);
+                    imageView.setBackgroundResource(R.drawable.play_black);
+                } else if (!BackgroundService.mMediaPlayer.isPlaying()) {
+                    BackgroundService.resume(context);
+                    imageView.setBackgroundResource(R.drawable.pause_black);
+                }
+            }
+        } else if(color == 1) {
+            if (BackgroundService.mMediaPlayer != null) {
+                if (BackgroundService.mMediaPlayer.isPlaying()) {
+                    BackgroundService.pause(context);
+                    imageView.setBackgroundResource(R.drawable.play_gray);
+                } else if (!BackgroundService.mMediaPlayer.isPlaying()) {
+                    BackgroundService.resume(context);
+                    imageView.setBackgroundResource(R.drawable.pause_gray);
+                }
             }
         }
 
     }
 
-    public static void checkPlayButtonState(Context context, ImageView imageView) {
-        if(BackgroundService.mMediaPlayer != null) {
-            if (!BackgroundService.mMediaPlayer.isPlaying()) {
-                imageView.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp);
-            } else if (BackgroundService.mMediaPlayer.isPlaying()) {
-                imageView.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+    public static void checkPlayButtonState(Context context, ImageView imageView, int color) {
+        if(color == 0) {
+            if(BackgroundService.mMediaPlayer != null) {
+                if (!BackgroundService.mMediaPlayer.isPlaying()) {
+                    imageView.setBackgroundResource(R.drawable.play_black);
+                } else if (BackgroundService.mMediaPlayer.isPlaying()) {
+                    imageView.setBackgroundResource(R.drawable.pause_black);
+                }
+            }
+        } else if(color == 1) {
+            if(BackgroundService.mMediaPlayer != null) {
+                if (!BackgroundService.mMediaPlayer.isPlaying()) {
+                    imageView.setBackgroundResource(R.drawable.play_gray);
+                } else if (BackgroundService.mMediaPlayer.isPlaying()) {
+                    imageView.setBackgroundResource(R.drawable.pause_gray);
+                }
             }
         }
+
     }
 
     public static void showMiniMediaFragment(UserLibSong constructor, FragmentActivity activity) {

@@ -3,6 +3,7 @@ package com.example.tiget.musicplayer.ui.Library;
 
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,19 +50,19 @@ public class LibraryAdapter extends RecyclerView.Adapter<ViewHolder> {
         holder.SongName.setText(song.SongName);
         holder.AuthorName.setText(song.AuthorName);
         holder.SongPreview.setImageResource(song.SongPreview);
-        holder.previewSongController.setVisibility(View.GONE);
+        Log.v("SONGPREVIEWID", "LIB: " + song.SongName + " / " + song.SongPreview);
 
 
         mDatabase = new UserLibDatabase(activity);
 
-        holder.SongLenght.setOnClickListener(new View.OnClickListener() {
+        holder.SongInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(mDatabase.alreadyExists(song.getSongUri())) {
                     Snackbar.make(holder.itemView, "Данная песня уже у вас в плейлисте", Snackbar.LENGTH_SHORT).show();
                 } else {
                     mDatabase.addSong(new UserLibSong(mSong.size(), song.getAuthorName(), song.getSongName(), song.getSongUri(), song.getSongPreview()));
-                    Snackbar.make(holder.itemView, "Песня добавлена в ваш плейлист", Snackbar.LENGTH_SHORT).show();
+                    //Snackbar.make(holder.itemView, "Песня добавлена в ваш плейлист", Snackbar.LENGTH_SHORT).show();
                 }
             }
         });

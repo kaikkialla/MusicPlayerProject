@@ -110,7 +110,7 @@ public class BackgroundService extends Service {
                             if (am != null) {
                                 am.unregisterMediaButtonEventReceiver(component);
                             }
-                            MiniMediaPlayerFragment.playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp);//Меняем иконку
+                            MiniMediaPlayerFragment.playBtn.setBackgroundResource(R.drawable.pause_black);//Меняем иконку
                             mMediaPlayer.pause();
 
                             break;

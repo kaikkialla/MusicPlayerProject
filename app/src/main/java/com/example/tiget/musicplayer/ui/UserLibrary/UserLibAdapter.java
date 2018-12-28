@@ -1,10 +1,9 @@
 package com.example.tiget.musicplayer.ui.UserLibrary;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +13,12 @@ import com.example.tiget.musicplayer.R;
 import com.example.tiget.musicplayer.ui.BackgroundService;
 import com.example.tiget.musicplayer.ui.MainActivity;
 import com.example.tiget.musicplayer.ui.t;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class UserLibAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
+public class UserLibAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     MainActivity activity;
     public static String SongUri;
@@ -39,26 +36,26 @@ public class UserLibAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
 
 
     @Override
-    public PlaylistViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(activity);
         View v = inflater.inflate(R.layout.user_lib_song_item, parent, false );
-        PlaylistViewHolder vh = new PlaylistViewHolder(v);
+        ViewHolder vh = new ViewHolder(v);
 
         return vh;
 
     }
 
     @Override
-    public void onBindViewHolder(final PlaylistViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         context = this.context;
 
-        final UserLibSong constructor = mSongs.get(position);
-        holder.SongName.setText(constructor.SongName);
-        holder.AuthorName.setText(constructor.AuthorName);
-        holder.SongPreview.setImageResource(constructor.SongPreview);
+        final UserLibSong song = mSongs.get(position);
+        holder.SongName.setText(song.SongName);
+        holder.AuthorName.setText(song.AuthorName);
+        holder.SongPreview.setImageResource(song.SongPreview);
+        Log.v("SONGPREVIEWID", "USERLIB: " + song.SongName + " / " + song.SongPreview);
 
-        SongUri = constructor.SongUri;
-        holder.previewSongController.setVisibility(View.GONE);
+        SongUri = song.SongUri;
 
 
 
@@ -71,23 +68,22 @@ public class UserLibAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
                 //Если что-то уже играет
                 if(BackgroundService.mMediaPlayer != null) {
 
-                    if(SongUri != constructor.SongUri) {
+                    if(SongUri != song.SongUri) {
 
-                        BackgroundService.changeSong(activity, constructor.SongUri);
-                        t.showMiniMediaFragment(constructor, activity);
-                        SongUri = constructor.SongUri;
-                    } else if(SongUri == constructor.SongUri) {
-                        t.showMediaFragment(constructor, activity);
+                        BackgroundService.changeSong(activity, song.SongUri);
+                        t.showMiniMediaFragment(song, activity);
+                        SongUri = song.SongUri;
+                    } else if(SongUri == song.SongUri) {
+                        t.showMediaFragment(song, activity);
                     }
 
                     //При первом нажатии на песню
                 } else  if(BackgroundService.mMediaPlayer == null){
 
-                    holder.previewSongController.setVisibility(View.GONE);
-                    BackgroundService.setSong(activity, constructor.SongUri);
-                    SongUri = constructor.SongUri;
+                    BackgroundService.setSong(activity, song.SongUri);
+                    SongUri = song.SongUri;
                     //activity.startService(new Intent(activity, BackgroundService.class));
-                    t.showMiniMediaFragment(constructor, activity);
+                    t.showMiniMediaFragment(song, activity);
 
                 }
             }

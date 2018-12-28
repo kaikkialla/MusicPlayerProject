@@ -73,7 +73,7 @@ public class MiniMediaPlayerFragment extends Fragment {
         playBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                t.checkPlayButtonPressedState(context, playBtn);
+                t.checkPlayButtonPressedState(context, playBtn, 1);
 
             }
         });
@@ -94,7 +94,7 @@ public class MiniMediaPlayerFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        t.checkPlayButtonState(context, playBtn);
+        t.checkPlayButtonState(context, playBtn, 1 );
     }
 
 
