@@ -12,12 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.tiget.musicplayer.R;
-import com.example.tiget.musicplayer.ui.BackgroundService;
-import com.example.tiget.musicplayer.ui.MainActivity;
-import com.example.tiget.musicplayer.ui.voids;
+import com.example.tiget.musicplayer.ui.t;
 
 
 public class MiniMediaPlayerFragment extends Fragment {
@@ -76,7 +73,7 @@ public class MiniMediaPlayerFragment extends Fragment {
         playBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                voids.checkPlayButtonPressedState(context, playBtn);
+                t.checkPlayButtonPressedState(context, playBtn);
 
             }
         });
@@ -87,7 +84,8 @@ public class MiniMediaPlayerFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 MediaPlayerFragment fragment = MediaPlayerFragment.newInstance(constructor);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, fragment).commit();
+                t.showMediaFragment(constructor, getActivity());
+                //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, fragment).commit();
             }
         });
     }
@@ -96,7 +94,7 @@ public class MiniMediaPlayerFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        voids.checkPlayButtonState(context, playBtn);
+        t.checkPlayButtonState(context, playBtn);
     }
 
 

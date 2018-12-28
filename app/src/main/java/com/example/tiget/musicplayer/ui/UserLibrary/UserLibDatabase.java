@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class PlaylistDatabase {
+public class UserLibDatabase {
 
     private Context mContext;
     private static List<UserLibSong> mSongs = new ArrayList<>();
@@ -20,7 +20,7 @@ public class PlaylistDatabase {
      */
     private static ChangeListener mChangeListener = null;
 
-    public PlaylistDatabase(Context context) {
+    public UserLibDatabase(Context context) {
         mContext = context;
     }
 

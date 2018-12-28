@@ -10,7 +10,10 @@ import android.media.session.PlaybackState;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -20,25 +23,19 @@ import android.widget.Toast;
 import com.example.tiget.musicplayer.ui.Library.LibraryFragment;
 import com.example.tiget.musicplayer.ui.UserLibrary.PlaylistFragment;
 import com.example.tiget.musicplayer.R;
+import com.example.tiget.musicplayer.ui.UserLibrary.UserLibSong;
 
 public class MainActivity extends AppCompatActivity {
-
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         if(savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, new PlaylistFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, new MusicFragment()).commit();
         }
+
     }
-
-
-
-
-
-
-
-
 }

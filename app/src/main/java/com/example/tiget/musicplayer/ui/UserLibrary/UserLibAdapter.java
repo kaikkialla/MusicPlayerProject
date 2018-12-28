@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import com.example.tiget.musicplayer.R;
 import com.example.tiget.musicplayer.ui.BackgroundService;
 import com.example.tiget.musicplayer.ui.MainActivity;
+import com.example.tiget.musicplayer.ui.t;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
+public class UserLibAdapter extends RecyclerView.Adapter<PlaylistViewHolder> {
 
     MainActivity activity;
     public static String SongUri;
@@ -32,7 +33,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder
 
 
 
-    public RecyclerViewAdapter(MainActivity activity) {
+    public UserLibAdapter(MainActivity activity) {
         this.activity = activity;
     }
 
@@ -73,10 +74,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder
                     if(SongUri != constructor.SongUri) {
 
                         BackgroundService.changeSong(activity, constructor.SongUri);
-                        showMiniMediaFragment(constructor);
+                        t.showMiniMediaFragment(constructor, activity);
                         SongUri = constructor.SongUri;
                     } else if(SongUri == constructor.SongUri) {
-                        showMediaFragment(constructor);
+                        t.showMediaFragment(constructor, activity);
                     }
 
                     //При первом нажатии на песню
@@ -86,7 +87,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder
                     BackgroundService.setSong(activity, constructor.SongUri);
                     SongUri = constructor.SongUri;
                     //activity.startService(new Intent(activity, BackgroundService.class));
-                    showMiniMediaFragment(constructor);
+                    t.showMiniMediaFragment(constructor, activity);
 
                 }
             }
@@ -110,22 +111,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<PlaylistViewHolder
     }
 
 
-    public void showMiniMediaFragment(UserLibSong constructor) {
-        //Создаем сервис для действий в фоновом режиме
-        //activity.startService(new Intent(activity, BackgroundService.class));
-        //открываем фрагмент с плеером внизу экрана
-        MiniMediaPlayerFragment fragment = MiniMediaPlayerFragment.newInstance(constructor);
 
-        activity.getSupportFragmentManager().beginTransaction().replace(R.id.miniFrameLayout, fragment).commit();
-    }
-
-
-
-    private void showMediaFragment(UserLibSong constructor) {
-
-        MediaPlayerFragment fragment = MediaPlayerFragment.newInstance(constructor);
-        activity.getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, fragment).commit();
-    }
 
 
     //Код для работы progressBar

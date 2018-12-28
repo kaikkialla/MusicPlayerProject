@@ -17,8 +17,8 @@ import android.widget.TextView;
 
 import com.example.tiget.musicplayer.R;
 import com.example.tiget.musicplayer.ui.BackgroundService;
-import com.example.tiget.musicplayer.ui.MainActivity;
-import com.example.tiget.musicplayer.ui.voids;
+import com.example.tiget.musicplayer.ui.MusicFragment;
+import com.example.tiget.musicplayer.ui.t;
 
 
 public class MediaPlayerFragment extends Fragment {
@@ -65,13 +65,14 @@ public class MediaPlayerFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                PlaylistFragment recyclerViewFragment = PlaylistFragment.newInstance(song);
-                MediaPlayerFragment mediaPlayerFragment = MediaPlayerFragment.newInstance(song);
-                MiniMediaPlayerFragment miniMediaPlayer = MiniMediaPlayerFragment.newInstance(song);
+                //PlaylistFragment recyclerViewFragment = PlaylistFragment.newInstance(song);
+                //MediaPlayerFragment mediaPlayerFragment = MediaPlayerFragment.newInstance(song);
+                //MiniMediaPlayerFragment miniMediaPlayer = MiniMediaPlayerFragment.newInstance(song);
 
 
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, recyclerViewFragment).commit();
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.miniFrameLayout, miniMediaPlayer).commit();
+
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, new MusicFragment()).commit();
+                t.showMiniMediaFragment(song, getActivity());
             }
         });
 
@@ -97,7 +98,7 @@ public class MediaPlayerFragment extends Fragment {
 
 
         //Настраиваем Position Bar
-        positionBar.setMax(RecyclerViewAdapter.totalTime);
+        positionBar.setMax(UserLibAdapter.totalTime);
         positionBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -139,7 +140,7 @@ public class MediaPlayerFragment extends Fragment {
         playBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                voids.checkPlayButtonPressedState(context, playBtn);
+                t.checkPlayButtonPressedState(context, playBtn);
 
             }
         });
@@ -172,7 +173,7 @@ public class MediaPlayerFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        voids.checkPlayButtonState(context, playBtn);
+        t.checkPlayButtonState(context, playBtn);
     }
 
     @Override
@@ -192,7 +193,7 @@ public class MediaPlayerFragment extends Fragment {
             String elapsedTime = createTimeLabel(currentPosition);
             elapsedTimeLabel.setText(elapsedTime);
 
-            String remainingTime = createTimeLabel(RecyclerViewAdapter.totalTime - currentPosition);
+            String remainingTime = createTimeLabel(UserLibAdapter.totalTime - currentPosition);
             remainingTimeLabel.setText("- " + remainingTime);
 
         }

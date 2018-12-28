@@ -9,8 +9,12 @@ import android.widget.Toast;
 
 import com.example.tiget.musicplayer.R;
 import com.example.tiget.musicplayer.ui.Library.LibraryFragment;
+import com.example.tiget.musicplayer.ui.UserLibrary.MediaPlayerFragment;
+import com.example.tiget.musicplayer.ui.UserLibrary.MiniMediaPlayerFragment;
+import com.example.tiget.musicplayer.ui.UserLibrary.UserLibSong;
 
-public class voids extends Activity {
+public class t extends Activity {
+
 
 
     public static void showFragment(Fragment fragment, FragmentActivity activity) {
@@ -37,16 +41,28 @@ public class voids extends Activity {
     }
 
     public static void checkPlayButtonState(Context context, ImageView imageView) {
-        Toast.makeText(context, "Resume", Toast.LENGTH_SHORT).show();
         if(BackgroundService.mMediaPlayer != null) {
             if (!BackgroundService.mMediaPlayer.isPlaying()) {
-                //BackgroundService.pause(context);
                 imageView.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp);
             } else if (BackgroundService.mMediaPlayer.isPlaying()) {
-                //BackgroundService.resume(context);
                 imageView.setBackgroundResource(R.drawable.ic_pause_black_24dp);
             }
         }
+    }
+
+    public static void showMiniMediaFragment(UserLibSong constructor, FragmentActivity activity) {
+        MiniMediaPlayerFragment fragment = MiniMediaPlayerFragment.newInstance(constructor);
+        activity.getSupportFragmentManager().beginTransaction().replace(R.id.miniMediaPlayerLayout, fragment).commit();
+    }
+
+
+    public static void showMediaFragment(UserLibSong constructor, FragmentActivity activity) {
+        MediaPlayerFragment mediaPlayerFragment = MediaPlayerFragment.newInstance(constructor);
+        MiniMediaPlayerFragment miniMediaPlayerFragment = new MiniMediaPlayerFragment();
+
+
+       // activity.getSupportFragmentManager().beginTransaction().replace(R.id.miniMediaPlayerLayout, null).commit();
+        activity.getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, mediaPlayerFragment).commit();
 
     }
 }

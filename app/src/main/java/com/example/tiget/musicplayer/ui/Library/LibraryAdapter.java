@@ -11,8 +11,10 @@ import com.example.tiget.musicplayer.ui.BackgroundService;
 import com.example.tiget.musicplayer.ui.MainActivity;
 import com.example.tiget.musicplayer.ui.UserLibrary.MediaPlayerFragment;
 import com.example.tiget.musicplayer.ui.UserLibrary.MiniMediaPlayerFragment;
-import com.example.tiget.musicplayer.ui.UserLibrary.PlaylistDatabase;
+import com.example.tiget.musicplayer.ui.UserLibrary.UserLibDatabase;
 import com.example.tiget.musicplayer.ui.UserLibrary.UserLibSong;
+import com.example.tiget.musicplayer.ui.t;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +25,7 @@ public class LibraryAdapter extends RecyclerView.Adapter<ViewHolder> {
     MainActivity activity;
     public static String mSongUri;
     public List<LibSong> mSong = new ArrayList<>();
-    PlaylistDatabase mDatabase;
+    UserLibDatabase mDatabase;
 
 
     public LibraryAdapter(MainActivity activity) {
@@ -50,7 +52,7 @@ public class LibraryAdapter extends RecyclerView.Adapter<ViewHolder> {
         holder.previewSongController.setVisibility(View.GONE);
 
 
-        mDatabase = new PlaylistDatabase(activity);
+        mDatabase = new UserLibDatabase(activity);
 
         holder.SongLenght.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,10 +74,10 @@ public class LibraryAdapter extends RecyclerView.Adapter<ViewHolder> {
                 if(BackgroundService.mMediaPlayer != null) {
                     if(mSongUri != song.getSongUri()) {
                         BackgroundService.changeSong(activity, song.getSongUri());
-                        showMiniMediaFragment(song);
+                        t.showMiniMediaFragment(song, activity);
                         mSongUri = song.getSongUri();
                     } else if(mSongUri == song.getSongUri()) {
-                        showMediaFragment(song);
+                        t.showMediaFragment(song, activity);
                     }
 
                 //При первом нажатии на песню
@@ -83,7 +85,7 @@ public class LibraryAdapter extends RecyclerView.Adapter<ViewHolder> {
                     holder.previewSongController.setVisibility(View.GONE);
                     BackgroundService.setSong(activity, song.getSongUri());
                     mSongUri = song.getSongUri();
-                    showMiniMediaFragment(song);
+                    t.showMiniMediaFragment(song, activity);
                 }
             }
         });
@@ -96,15 +98,5 @@ public class LibraryAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     }
 
-    public void showMiniMediaFragment(UserLibSong constructor) {
-        //открываем фрагмент с плеером внизу экрана
-        MiniMediaPlayerFragment fragment = MiniMediaPlayerFragment.newInstance(constructor);
-        activity.getSupportFragmentManager().beginTransaction().replace(R.id.miniFrameLayout, fragment).commit();
-    }
 
-
-    private void showMediaFragment(UserLibSong constructor) {
-        MediaPlayerFragment fragment = MediaPlayerFragment.newInstance(constructor);
-        activity.getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, fragment).commit();
-    }
 }
