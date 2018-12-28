@@ -11,7 +11,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.widget.Toast;
 import com.example.tiget.musicplayer.R;
-import com.example.tiget.musicplayer.ui.UserLibrary.MiniMediaPlayerFragment;
+
 import java.io.IOException;
 
 
@@ -126,7 +126,7 @@ public class BackgroundService extends Service {
 
 
 
-    public static void setSong(Context context, String SongUri) {
+    public static void setSong(String SongUri, Context context) {
         final Intent intent = new Intent(context, BackgroundService.class);
         intent.setAction(ACTION_SET_SONG);
         mSongUri = SongUri;
@@ -134,7 +134,7 @@ public class BackgroundService extends Service {
     }
 
 
-    public static void changeSong(Context context, String SongUri) {
+    public static void changeSong(String SongUri, Context context) {
         final Intent intent = new Intent(context, BackgroundService.class);
         intent.setAction(ACTION__CHANGE_SONG);
         mSongUri = SongUri;

@@ -25,6 +25,10 @@ public class UserLibAdapter extends RecyclerView.Adapter<ViewHolder> {
     public static int totalTime;
     Context context;
 
+    public static long mCurrentSongId;
+    public static UserLibSong nextSong;
+    public static UserLibSong previousSong;
+
     public static List<UserLibSong> mSongs = new ArrayList<>();
 
 
@@ -53,7 +57,16 @@ public class UserLibAdapter extends RecyclerView.Adapter<ViewHolder> {
         holder.SongName.setText(song.SongName);
         holder.AuthorName.setText(song.AuthorName);
         holder.SongPreview.setImageResource(song.SongPreview);
-        Log.v("SONGPREVIEWID", "USERLIB: " + song.SongName + " / " + song.SongPreview);
+
+        if(position > 1) {
+            previousSong = mSongs.get(position -1);
+        }
+
+        if(position < mSongs.size() -1) {
+            nextSong = mSongs.get(position + 1);
+        }
+
+        mCurrentSongId = song.id;
 
         SongUri = song.SongUri;
 
@@ -70,7 +83,7 @@ public class UserLibAdapter extends RecyclerView.Adapter<ViewHolder> {
 
                     if(SongUri != song.SongUri) {
 
-                        BackgroundService.changeSong(activity, song.SongUri);
+                        BackgroundService.changeSong(song.SongUri, activity);
                         t.showMiniMediaFragment(song, activity);
                         SongUri = song.SongUri;
                     } else if(SongUri == song.SongUri) {
@@ -80,7 +93,7 @@ public class UserLibAdapter extends RecyclerView.Adapter<ViewHolder> {
                     //При первом нажатии на песню
                 } else  if(BackgroundService.mMediaPlayer == null){
 
-                    BackgroundService.setSong(activity, song.SongUri);
+                    BackgroundService.setSong(song.SongUri, activity);
                     SongUri = song.SongUri;
                     //activity.startService(new Intent(activity, BackgroundService.class));
                     t.showMiniMediaFragment(song, activity);

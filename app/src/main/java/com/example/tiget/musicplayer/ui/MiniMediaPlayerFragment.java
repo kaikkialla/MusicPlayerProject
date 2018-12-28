@@ -1,4 +1,4 @@
-package com.example.tiget.musicplayer.ui.UserLibrary;
+package com.example.tiget.musicplayer.ui;
 
 
 import android.content.Context;
@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.tiget.musicplayer.R;
-import com.example.tiget.musicplayer.ui.t;
+import com.example.tiget.musicplayer.ui.UserLibrary.UserLibSong;
 
 
 public class MiniMediaPlayerFragment extends Fragment {
@@ -25,17 +25,15 @@ public class MiniMediaPlayerFragment extends Fragment {
     LinearLayout mainContainer;
     static Context context;
 
-    public static final String ACTION_PLAY  = "ACTION_PLAY";
-    public static final String ACTION_PAUSE = "ACTION_PAUSE";
 
 
 
     public static MiniMediaPlayerFragment newInstance(UserLibSong constructor) {
-        MiniMediaPlayerFragment fragnent = new MiniMediaPlayerFragment();
+        MiniMediaPlayerFragment fragment = new MiniMediaPlayerFragment();
         Bundle argument = new Bundle();
         argument.putSerializable("Constructor", constructor);
-        fragnent.setArguments(argument);
-        return fragnent;
+        fragment.setArguments(argument);
+        return fragment;
     }
 
 

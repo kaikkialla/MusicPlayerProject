@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 import com.example.tiget.musicplayer.R;
 import com.example.tiget.musicplayer.ui.BackgroundService;
 import com.example.tiget.musicplayer.ui.MainActivity;
-import com.example.tiget.musicplayer.ui.UserLibrary.MediaPlayerFragment;
-import com.example.tiget.musicplayer.ui.UserLibrary.MiniMediaPlayerFragment;
 import com.example.tiget.musicplayer.ui.UserLibrary.UserLibDatabase;
 import com.example.tiget.musicplayer.ui.UserLibrary.UserLibSong;
 import com.example.tiget.musicplayer.ui.t;
@@ -74,7 +72,7 @@ public class LibraryAdapter extends RecyclerView.Adapter<ViewHolder> {
                 //Если что-то уже играет
                 if(BackgroundService.mMediaPlayer != null) {
                     if(mSongUri != song.getSongUri()) {
-                        BackgroundService.changeSong(activity, song.getSongUri());
+                        BackgroundService.changeSong(song.getSongUri(), activity);
                         t.showMiniMediaFragment(song, activity);
                         mSongUri = song.getSongUri();
                     } else if(mSongUri == song.getSongUri()) {
@@ -84,7 +82,7 @@ public class LibraryAdapter extends RecyclerView.Adapter<ViewHolder> {
                 //При первом нажатии на песню
                 } else  if(BackgroundService.mMediaPlayer == null){
                     holder.previewSongController.setVisibility(View.GONE);
-                    BackgroundService.setSong(activity, song.getSongUri());
+                    BackgroundService.setSong(song.getSongUri(), activity);
                     mSongUri = song.getSongUri();
                     t.showMiniMediaFragment(song, activity);
                 }

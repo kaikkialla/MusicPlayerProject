@@ -1,6 +1,7 @@
-package com.example.tiget.musicplayer.ui.UserLibrary;
+package com.example.tiget.musicplayer.ui;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,37 +17,38 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.tiget.musicplayer.R;
-import com.example.tiget.musicplayer.ui.BackgroundService;
-import com.example.tiget.musicplayer.ui.MusicFragment;
-import com.example.tiget.musicplayer.ui.t;
+import com.example.tiget.musicplayer.ui.UserLibrary.UserLibAdapter;
+import com.example.tiget.musicplayer.ui.UserLibrary.UserLibSong;
 
 
 public class MediaPlayerFragment extends Fragment {
     Context context;
-    ImageView playBtn;
-    SeekBar positionBar;
-    SeekBar volumeBar;
 
     TextView elapsedTimeLabel;
     TextView remainingTimeLabel;
     TextView SongNameTextView;
     TextView AuthorNameTextView;
-    ImageView SongPreview;
+    ImageView mSongPreview;
 
 
     String mSongName;
     String mAuthorName;
     int mPreviewImageResId;
 
-    ImageView backBtn;
+    ImageView mBackButton;
+    ImageView mPauseButton;
+    ImageView mForwardButton;
+    ImageView mRewindButton;
 
+    SeekBar mTimeline;
+    SeekBar mVolumeBar;
 
     public static MediaPlayerFragment newInstance(UserLibSong constructor) {
-        MediaPlayerFragment fragnent = new MediaPlayerFragment();
+        MediaPlayerFragment fragment = new MediaPlayerFragment();
         Bundle argument = new Bundle();
         argument.putSerializable("Constructor", constructor);
-        fragnent.setArguments(argument);
-        return fragnent;
+        fragment.setArguments(argument);
+        return fragment;
     }
 
 
@@ -54,57 +56,47 @@ public class MediaPlayerFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         context = getContext();
-        //создаем главную вьюшку
         View view = inflater.inflate(R.layout.media_player_fragment, container, false);
-        //настраиваем
         final UserLibSong song = (UserLibSong) getArguments().getSerializable("Constructor");
 
-        backBtn = view.findViewById(R.id.backBtn);
-
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                //PlaylistFragment recyclerViewFragment = PlaylistFragment.newInstance(song);
-                //MediaPlayerFragment mediaPlayerFragment = MediaPlayerFragment.newInstance(song);
-                //MiniMediaPlayerFragment miniMediaPlayer = MiniMediaPlayerFragment.newInstance(song);
-
-
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, new MusicFragment()).commit();
-                t.showMiniMediaFragment(song, getActivity());
-            }
-        });
 
 
 
-        playBtn = view.findViewById(R.id.playBtnClick);
-        positionBar = view.findViewById(R.id.positionBar);
-        volumeBar = view.findViewById(R.id.volumeBar);
+        mBackButton = view.findViewById(R.id.backBtn);
+        mPauseButton = view.findViewById(R.id.pauseBtn);
+        mRewindButton = view.findViewById(R.id.rewindBtn);
+        mForwardButton = view.findViewById(R.id.forwardBtn);
+
+        mTimeline = view.findViewById(R.id.positionBar);
+        mVolumeBar = view.findViewById(R.id.volumeBar);
+
         elapsedTimeLabel = view.findViewById(R.id.elapsedTimeLabel);
         remainingTimeLabel = view.findViewById(R.id.remainingTimeLabel);
+
+        mSongPreview = view.findViewById(R.id.SongImage);
         AuthorNameTextView = view.findViewById(R.id.AuthorNameTextView);
         SongNameTextView = view.findViewById(R.id.SongNameTextView);
-        SongPreview = view.findViewById(R.id.SongImage);
 
 
         mSongName = song.SongName;
         mAuthorName = song.AuthorName;
         mPreviewImageResId = song.SongPreview;
 
+
         SongNameTextView.setText(mSongName);
         AuthorNameTextView.setText(mAuthorName);
-        SongPreview.setImageResource(mPreviewImageResId);
+        mSongPreview.setImageResource(mPreviewImageResId);
 
 
         //Настраиваем Position Bar
-        positionBar.setMax(UserLibAdapter.totalTime);
-        positionBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        mTimeline.setMax(UserLibAdapter.totalTime);
+        mTimeline.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 if (b) {
                     BackgroundService.mMediaPlayer.seekTo(i);
                     BackgroundService.mMediaPlayer.start();
-                    positionBar.setProgress(i);
+                    mTimeline.setProgress(i);
                 }
             }
 
@@ -119,7 +111,7 @@ public class MediaPlayerFragment extends Fragment {
 
 
         //Настраиваем Volume Bar
-        volumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        mVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 float volumeNum = i / 100f;
@@ -136,14 +128,39 @@ public class MediaPlayerFragment extends Fragment {
         });
 
         //Кнопка паузы
-        playBtn.setOnClickListener(new View.OnClickListener() {
+        mPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                t.checkPlayButtonPressedState(context, playBtn, 0);
+                t.checkPlayButtonPressedState(context, mPauseButton, 0);
 
             }
         });
 
+        mForwardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BackgroundService.changeSong(UserLibAdapter.nextSong.SongUri, context);
+            }
+        });
+
+        mRewindButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BackgroundService.changeSong(UserLibAdapter.previousSong.SongUri, context);
+
+            }
+        });
+
+
+
+
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, new MusicFragment()).commit();
+                t.showMiniMediaFragment(song, getActivity());
+            }
+        });
 
         //Постоянно получаем текущее время трека, кладем в Message и отпрявляем в Handler
         new Thread(new Runnable() {
@@ -172,7 +189,7 @@ public class MediaPlayerFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        t.checkPlayButtonState(context, playBtn, 0);
+        t.checkPlayButtonState(context, mPauseButton, 0);
     }
 
     @Override
@@ -181,12 +198,13 @@ public class MediaPlayerFragment extends Fragment {
     }
 
     //Устанавливаем текущее и оставшееся время
+    @SuppressLint("HandlerLeak")
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             int currentPosition = msg.what;
             //Updating Position Bar
-            positionBar.setProgress(currentPosition);
+            mTimeline.setProgress(currentPosition);
 
             //Update Labels
             String elapsedTime = createTimeLabel(currentPosition);

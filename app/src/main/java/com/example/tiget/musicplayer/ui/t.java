@@ -8,8 +8,6 @@ import android.widget.ImageView;
 
 import com.example.tiget.musicplayer.R;
 import com.example.tiget.musicplayer.ui.Library.LibraryFragment;
-import com.example.tiget.musicplayer.ui.UserLibrary.MediaPlayerFragment;
-import com.example.tiget.musicplayer.ui.UserLibrary.MiniMediaPlayerFragment;
 import com.example.tiget.musicplayer.ui.UserLibrary.UserLibSong;
 
 public class t extends Activity {
