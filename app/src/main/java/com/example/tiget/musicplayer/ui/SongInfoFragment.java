@@ -19,7 +19,7 @@ public class SongInfoFragment extends Fragment {
     private ImageView SongPreviewIV;
     private TextView SongNameTV;
     private TextView AuthorNameTV;
-    private ImageView CloseArea;
+    public static ImageView CloseArea;
 
     private static String mSongUri;
     private static String mAuthorName;
@@ -69,10 +69,11 @@ public class SongInfoFragment extends Fragment {
         CloseArea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, new MusicFragment()).commit();
-                //t.showMiniMediaFragment(mSongUri, mAuthorName, mSongName, mResId, getActivity());
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, new MusicFragment()).commit();
+                t.showMiniMediaFragment(mSongUri, mAuthorName, mSongName, mResId, getActivity());
             }
         });
+
     }
 }
 

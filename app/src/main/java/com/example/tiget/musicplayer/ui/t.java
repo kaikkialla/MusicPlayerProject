@@ -82,13 +82,24 @@ public class t extends Activity {
 
     public static void showMediaFragment(String SongUri, String AuthorName, String SongName, int ResId, FragmentActivity activity) {
         MediaPlayerFragment mediaPlayerFragment = MediaPlayerFragment.newInstance(SongUri, AuthorName, SongName, ResId);
-        //MiniMediaPlayerFragment miniMediaPlayerFragment = new MiniMediaPlayerFragment();
         activity.getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, mediaPlayerFragment).commit();
     }
-/*
+
     public static void showSongInfoFragment(String SongUri, String AuthorName, String SongName, int ResId, FragmentActivity activity) {
+        FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
         SongInfoFragment fragment = SongInfoFragment.newInstance(SongUri, AuthorName, SongName, ResId);
-        activity.getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, fragment).commit();
+        ft.add(R.id.FrameLayout, fragment);
+        ft.commit();
+        //activity.getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, fragment).commit();
     }
-    */
+
 }
+
+
+
+
+
+
+/*
+SongInfoFragment fragment = SongInfoFragment.newInstance(song.getSongUri(), song.getAuthorName(), song.getSongName(), song.getSongPreview());
+ */

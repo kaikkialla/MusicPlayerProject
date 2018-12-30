@@ -66,7 +66,7 @@ public class LibraryAdapter extends RecyclerView.Adapter<ViewHolder> {
         holder.SongInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //t.showSongInfoFragment(song.getSongUri(), song.getAuthorName(), song.getSongName(),song.getSongPreview(), activity);
+                //t.showSongInfoFragment(song.getSongUri(), song.getAuthorName(), song.getSongName(),song.getSongPreview(), activity);gi
             }
         });
 

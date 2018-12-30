@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 import com.example.tiget.musicplayer.R;
 import com.example.tiget.musicplayer.ui.BackgroundService;
 import com.example.tiget.musicplayer.ui.MainActivity;
+import com.example.tiget.musicplayer.ui.MediaPlayerFragment;
 import com.example.tiget.musicplayer.ui.SongInfoFragment;
 import com.example.tiget.musicplayer.ui.t;
 import java.util.ArrayList;
@@ -123,12 +125,19 @@ public class UserLibAdapter extends RecyclerView.Adapter<ViewHolder> {
         });
 
 
+
         holder.SongInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //t.showSongInfoFragment(song.getSongUri(), song.getAuthorName(), song.getSongName(),song.getSongPreview(), activity);
+                final SongInfoFragment fragment = SongInfoFragment.newInstance(song.getSongUri(), song.getAuthorName(), song.getSongName(), song.getSongPreview());
+                activity.getSupportFragmentManager().beginTransaction().add(R.id.FrameLayout, fragment).commit();
             }
         });
+
+
+
+
+
     }
 
 
