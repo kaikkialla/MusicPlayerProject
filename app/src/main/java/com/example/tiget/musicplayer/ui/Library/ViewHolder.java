@@ -17,13 +17,9 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     Context context;
     TextView AuthorName;
     TextView SongName;
-    TextView SongInfo;
+    ImageView SongInfo;
     ImageView SongPreview;
-    RelativeLayout previewSongController;
-
-
     LinearLayout mainContainer;
-    RelativeLayout playPausePreviewLayout;//Макет с превью, кнопкой паузы и прогресс баром, появл при нажатии
 
 
     public ViewHolder(View itemView) {
@@ -36,8 +32,6 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         SongInfo = itemView.findViewById(R.id.SongInfo);
         SongName = itemView.findViewById(R.id.SongName);
         SongPreview = itemView.findViewById(R.id.preview);
-
-        playPausePreviewLayout = itemView.findViewById(R.id.play_pause_preview_layout);
         mainContainer = itemView.findViewById(R.id.main_container);
 
 

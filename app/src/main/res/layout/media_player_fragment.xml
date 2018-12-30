@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -16,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:src="@drawable/arrow_down_gray"
-        android:layout_marginTop="8dp"/>
+        android:background="@drawable/rectangle_selector"/>
 
 
     <ImageView
@@ -25,7 +22,6 @@
         android:layout_height="300dp"
         android:background="@drawable/no_image_loaded"
         android:scaleType="centerCrop"
-        android:layout_marginTop="8dp"
         />
 
     <SeekBar
@@ -93,7 +89,8 @@
             android:id="@+id/rewindBtn"
             android:layout_width="40dp"
             android:layout_height="32dp"
-            android:background="@drawable/previous_song_black"
+            android:src="@drawable/previous_song_black"
+            android:background="@drawable/rectangle_selector"
             android:layout_toLeftOf="@id/pauseBtn"
             android:layout_centerInParent="true"
             android:layout_marginRight="16dp"/>
@@ -103,7 +100,8 @@
             android:id="@+id/pauseBtn"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:background="@drawable/pause_black"
+            android:src="@drawable/pause_black"
+            android:background="@drawable/rectangle_selector"
             android:layout_centerInParent="true"/>
 
 
@@ -112,7 +110,8 @@
             android:id="@+id/forwardBtn"
             android:layout_width="40dp"
             android:layout_height="32dp"
-            android:background="@drawable/next_song_black"
+            android:src="@drawable/next_song_black"
+            android:background="@drawable/rectangle_selector"
             android:layout_toRightOf="@id/pauseBtn"
             android:layout_centerInParent="true"
             android:layout_marginLeft="16dp"/>

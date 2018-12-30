@@ -3,15 +3,21 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="64dp"
     android:orientation="horizontal"
     android:background="#FFF">
+
+
+
+
 
     <LinearLayout
         android:id="@+id/mini_song_info_container"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:background="@drawable/rectangle_selector"
+        >
 
         <ImageView
             android:id="@+id/mini_preview"
@@ -29,35 +35,30 @@
 
     </LinearLayout>
 
-    <LinearLayout
+
+
+    <ImageView
+        android:id="@+id/mini_play_btn"
         android:layout_width="wrap_content"
-        android:layout_height="64dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pause_gray"
+        android:layout_centerVertical="true"
+        android:layout_margin="4dp"
+        android:background="@drawable/rectangle_selector"
+        android:layout_toLeftOf="@id/mini_forward"
+
+        />
+
+    <ImageView
+        android:id="@+id/mini_forward"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:gravity="center_vertical">
-
-
-        <ImageView
-            android:id="@+id/mini_play_btn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/pause_gray"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="4dp"
-            />
-
-        <ImageView
-            android:id="@+id/mini_forward"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/next_song_gray"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="4dp"
-            />
-
-
-    </LinearLayout>
+        android:layout_centerVertical="true"
+        android:layout_margin="4dp"
+        android:background="@drawable/rectangle_selector"
+        android:src="@drawable/next_song_gray"
+        />
 
 
 </RelativeLayout>

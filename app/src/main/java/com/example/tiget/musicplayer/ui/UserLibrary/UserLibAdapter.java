@@ -1,17 +1,29 @@
 package com.example.tiget.musicplayer.ui.UserLibrary;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.tiget.musicplayer.R;
 import com.example.tiget.musicplayer.ui.BackgroundService;
 import com.example.tiget.musicplayer.ui.MainActivity;
+import com.example.tiget.musicplayer.ui.SongInfoFragment;
 import com.example.tiget.musicplayer.ui.t;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +33,7 @@ import java.util.TimerTask;
 public class UserLibAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     MainActivity activity;
-    public static String SongUri;
-    public static int totalTime;
+
     Context context;
 
     public static long mCurrentSongId;
@@ -31,7 +42,11 @@ public class UserLibAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     public static List<UserLibSong> mSongs = new ArrayList<>();
 
-
+    public static String mSongUri;
+    public static String mAuthorName;
+    public static String mSongName;
+    public static int mResId;
+    public static int mTotalTime;
 
 
     public UserLibAdapter(MainActivity activity) {
@@ -49,58 +64,70 @@ public class UserLibAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     }
 
+
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         context = this.context;
 
         final UserLibSong song = mSongs.get(position);
-        holder.SongName.setText(song.SongName);
-        holder.AuthorName.setText(song.AuthorName);
-        holder.SongPreview.setImageResource(song.SongPreview);
+        mSongUri = song.getSongUri();
+        mAuthorName = song.getAuthorName();
+        mSongName = song.getSongName();
+        mResId = song.getSongPreview();
 
-        if(position > 1) {
-            previousSong = mSongs.get(position -1);
+        Log.e("gagaga", "USERLIB: " + mSongName);
+
+        holder.SongName.setText(mSongName);
+        holder.AuthorName.setText(mAuthorName);
+        holder.SongPreview.setImageResource(mResId);
+
+        if(position > 0) {
+            previousSong = mSongs.get(position - 1);
         }
 
-        if(position < mSongs.size() -1) {
+        if(position < mSongs.size() - 1) {
             nextSong = mSongs.get(position + 1);
         }
 
-        mCurrentSongId = song.id;
-
-        SongUri = song.SongUri;
-
-
-
-
+/**
+ *  При открытии MediaPlayer'а, закрытии и нажатии на ту же самую песню
+ */
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View view) {
+
+                Log.e("gagaga", "USERLIB: " + mSongName);
                 //Если что-то уже играет
                 if(BackgroundService.mMediaPlayer != null) {
 
-                    if(SongUri != song.SongUri) {
-
+                    if(mSongUri != song.SongUri) {
                         BackgroundService.changeSong(song.SongUri, activity);
-                        t.showMiniMediaFragment(song, activity);
-                        SongUri = song.SongUri;
-                    } else if(SongUri == song.SongUri) {
-                        t.showMediaFragment(song, activity);
+                        t.showMiniMediaFragment(song.getSongUri(), song.getAuthorName(), song.getSongName(),song.getSongPreview(), activity);
+                        mSongUri = song.SongUri;
+                    } else if(mSongUri == song.SongUri) {
+                        t.showMediaFragment(song.getSongUri(), song.getAuthorName(), song.getSongName(),song.getSongPreview(), activity);
                     }
 
                     //При первом нажатии на песню
                 } else  if(BackgroundService.mMediaPlayer == null){
 
                     BackgroundService.setSong(song.SongUri, activity);
-                    SongUri = song.SongUri;
+                    mSongUri = song.SongUri;
                     //activity.startService(new Intent(activity, BackgroundService.class));
-                    t.showMiniMediaFragment(song, activity);
+                    t.showMiniMediaFragment(song.getSongUri(), song.getAuthorName(), song.getSongName(),song.getSongPreview(), activity);
 
                 }
             }
 
+        });
+
+
+        holder.SongInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //t.showSongInfoFragment(song.getSongUri(), song.getAuthorName(), song.getSongName(),song.getSongPreview(), activity);
+            }
         });
     }
 
@@ -118,34 +145,4 @@ public class UserLibAdapter extends RecyclerView.Adapter<ViewHolder> {
         return mSongs.size();
 
     }
-
-
-
-
-
-    //Код для работы progressBar
-    public void setProgressBarTime(final ProgressBar progressBar) {
-        final Handler handler = new Handler();
-        final Runnable Update = new Runnable() {
-            public void run() {
-                progressBar.setMax(BackgroundService.mMediaPlayer.getDuration() / 1000);//Макс значение - длина песни(в секундах)
-                int currentPosition =  BackgroundService.mMediaPlayer.getCurrentPosition() / 1000;//Текущая позиция(в секундах)
-                progressBar.setProgress(currentPosition);
-
-            }
-        };
-        Timer swipeTimer = new Timer();
-        swipeTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                handler.post(Update);
-            }
-        }, 0, 1);
-    }
-
-
-
-
-
-
 }

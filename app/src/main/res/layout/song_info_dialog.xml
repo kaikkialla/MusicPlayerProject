@@ -1,28 +1,225 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/bottom_sheet"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:fitsSystemWindows="true">
+
+
+
+
+<android.support.design.widget.AppBarLayout
+    android:id="@+id/appbar"
     android:layout_width="match_parent"
-    android:layout_height="340dp"
-    android:background="@android:color/darker_gray"
-    android:orientation="vertical"
-    app:behavior_hideable="true"
-    app:behavior_peekHeight="80dp"
-    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+    android:layout_height="wrap_content"
+    android:fitsSystemWindows="true"
+    android:background="@color/colorTransparent"
+    android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="@color/colorAccent"
-        android:gravity="center"
-        android:text="bottom_sheet_peek"
-        android:textColor="@android:color/white" />
-
-    <TextView
+    <android.support.design.widget.CollapsingToolbarLayout
+        android:id="@+id/collapsing_toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="bottom_sheet_content"
-        android:textColor="@android:color/white" />
+        android:fitsSystemWindows="true"
+        app:contentScrim="?attr/colorPrimary"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-</LinearLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_collapseMode="parallax"
+            android:background="@android:color/transparent"
+            >
+
+
+            <ImageView
+                android:id="@+id/closeArea"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#000"
+                android:alpha="0.6"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:background="@android:color/transparent">
+
+                <ImageView
+                    android:id="@+id/photo"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:background="@color/colorAccent"
+                    android:fitsSystemWindows="true"
+                    android:scaleType="centerCrop"
+                    android:layout_marginTop="16dp"
+                    />
+
+
+                <TextView
+                    android:id="@+id/SongName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Song Name"
+                    android:textSize="24dp"
+                    android:textColor="@color/colorTextDark"/>
+
+                <TextView
+                    android:id="@+id/AuthorName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18dp"
+                    android:text="Author Name"
+                    android:textColor="@color/colorTextLight"/>
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+    </android.support.design.widget.CollapsingToolbarLayout>
+</android.support.design.widget.AppBarLayout>
+
+
+
+
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context=".MainActivity"
+        tools:showIn="@layout/activity_main"
+        android:background="#FFFFFF">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+
+            <RelativeLayout
+                android:id="@+id/likeSong"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/icon1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/favorite_border"
+                    android:layout_centerVertical="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Like"
+                    android:textColor="@color/colorTextDark"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/icon1"
+                    android:layout_marginLeft="8dp"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/hideSong"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/icon2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/hide_gray"
+                    android:layout_centerVertical="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Hide this song"
+                    android:textColor="@color/colorTextDark"
+                    android:layout_toRightOf="@+id/icon2"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="8dp"/>
+            </RelativeLayout>
+
+
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:background="@color/colorTextLight"/>
+
+
+            <RelativeLayout
+                android:id="@+id/addSong"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/icon3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/add_gray"
+                    android:layout_centerVertical="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Add to your playlist"
+                    android:textColor="@color/colorTextDark"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/icon3"
+                    android:layout_marginLeft="8dp"/>
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/removeSong"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/icon4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/remove_gray"
+                    android:layout_centerVertical="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Remove this songAAAAAAAAAAAAAAAAAAAAAA"
+                    android:textSize="72dp"
+                    android:textColor="@color/colorTextDark"
+                    android:layout_toRightOf="@+id/icon4"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="8dp"/>
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+<!-- margin top - расстояние от верха recycler view-->
+</android.support.design.widget.CoordinatorLayout>

@@ -3,67 +3,57 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp">
-
-
-
-        <RelativeLayout
-            android:id="@+id/play_pause_preview_layout"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-
-
-            <ImageView
-                android:id="@+id/preview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerVertical="true"
-                android:scaleType="centerCrop"
-                />
+    android:layout_marginTop="8dp"
+    android:background="@drawable/rectangle_selector"
+    android:padding="8dp"
+    >
 
 
 
 
-        </RelativeLayout>
+    <ImageView
+        android:id="@+id/preview"
+        android:layout_centerVertical="true"
+        android:scaleType="centerCrop"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+
+        />
 
 
 
-        <LinearLayout
-            android:id="@+id/main_container"
-            android:layout_toRightOf="@+id/play_pause_preview_layout"
+
+
+    <LinearLayout
+        android:id="@+id/main_container"
+        android:layout_toRightOf="@+id/preview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="64dp"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/SongName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="64dp"
-            android:orientation="vertical">
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textColor="@color/colorTextDark"/>
 
 
-            <TextView
-                android:id="@+id/SongName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:textSize="18sp"
-                android:textColor="@color/colorTextDark"/>
+        <TextView
+            android:id="@+id/AuthorName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="18dp"
+            android:textColor="@color/colorTextLight"/>
+    </LinearLayout>
 
-
-            <TextView
-                android:id="@+id/AuthorName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:textSize="18dp"
-                android:textColor="@color/colorTextLight"/>
-        </LinearLayout>
-
-
-
-
-
-    <TextView
+    <ImageView
         android:id="@+id/SongInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -71,8 +61,14 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="16dp"
         android:textColor="@color/colorTextLight"
-        android:background="@drawable/song_info_gray"
+        android:background="@drawable/rectangle_selector"
+        android:src="@drawable/song_info_gray"
         />
+
+
+
+
+
 
 
 

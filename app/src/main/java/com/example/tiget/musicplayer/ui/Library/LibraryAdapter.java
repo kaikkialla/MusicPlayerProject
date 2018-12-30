@@ -22,10 +22,12 @@ import java.util.List;
 public class LibraryAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     MainActivity activity;
-    public static String mSongUri;
-    public List<LibSong> mSong = new ArrayList<>();
     UserLibDatabase mDatabase;
 
+    private static String mSongUri;
+    private static String mAuthorName;
+    private static String mSongName;
+    private static int mResId;
 
     public LibraryAdapter(MainActivity activity) {
         this.activity = activity;
@@ -43,25 +45,28 @@ public class LibraryAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final UserLibSong song = Database.Arr[position];
+        final LibSong song = Database.Array[position];
+
+        mSongUri = song.SongUri;
+        mAuthorName = song.AuthorName;
+        mSongName = song.SongName;
+        mResId = song.SongPreview;
+
+        Log.e("gagaga", "LIB: " + song.SongName + song.SongUri);
 
         holder.SongName.setText(song.SongName);
         holder.AuthorName.setText(song.AuthorName);
         holder.SongPreview.setImageResource(song.SongPreview);
-        Log.v("SONGPREVIEWID", "LIB: " + song.SongName + " / " + song.SongPreview);
 
 
         mDatabase = new UserLibDatabase(activity);
 
+
+
         holder.SongInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mDatabase.alreadyExists(song.getSongUri())) {
-                    Snackbar.make(holder.itemView, "Данная песня уже у вас в плейлисте", Snackbar.LENGTH_SHORT).show();
-                } else {
-                    mDatabase.addSong(new UserLibSong(mSong.size(), song.getAuthorName(), song.getSongName(), song.getSongUri(), song.getSongPreview()));
-                    //Snackbar.make(holder.itemView, "Песня добавлена в ваш плейлист", Snackbar.LENGTH_SHORT).show();
-                }
+                //t.showSongInfoFragment(song.getSongUri(), song.getAuthorName(), song.getSongName(),song.getSongPreview(), activity);
             }
         });
 
@@ -70,21 +75,21 @@ public class LibraryAdapter extends RecyclerView.Adapter<ViewHolder> {
             @Override
             public void onClick(View view) {
                 //Если что-то уже играет
+                Log.e("gagaga", "LIB: " + mSongName);
                 if(BackgroundService.mMediaPlayer != null) {
                     if(mSongUri != song.getSongUri()) {
                         BackgroundService.changeSong(song.getSongUri(), activity);
-                        t.showMiniMediaFragment(song, activity);
+                        t.showMiniMediaFragment(song.getSongUri(), song.getAuthorName(), song.getSongName(),song.getSongPreview(), activity);
                         mSongUri = song.getSongUri();
                     } else if(mSongUri == song.getSongUri()) {
-                        t.showMediaFragment(song, activity);
+                        t.showMediaFragment(song.getSongUri(), song.getAuthorName(), song.getSongName(),song.getSongPreview(), activity);
                     }
 
                 //При первом нажатии на песню
                 } else  if(BackgroundService.mMediaPlayer == null){
-                    holder.previewSongController.setVisibility(View.GONE);
                     BackgroundService.setSong(song.getSongUri(), activity);
                     mSongUri = song.getSongUri();
-                    t.showMiniMediaFragment(song, activity);
+                    t.showMiniMediaFragment(song.getSongUri(), song.getAuthorName(), song.getSongName(),song.getSongPreview(), activity);
                 }
             }
         });
@@ -93,9 +98,22 @@ public class LibraryAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return Database.Arr.length;
+        return Database.Array.length;
 
     }
 
 
+
 }
+
+
+/*
+
+    if(mDatabase.alreadyExists(song.getSongUri())) {
+                    Snackbar.make(holder.itemView, "Данная песня уже у вас в плейлисте", Snackbar.LENGTH_SHORT).show();
+                } else {
+                    mDatabase.addSong(new UserLibSong(0, song.getAuthorName(), song.getSongName(), song.getSongUri(), song.getSongPreview()));
+                    //Snackbar.make(holder.itemView, "Песня добавлена в ваш плейлист", Snackbar.LENGTH_SHORT).show();
+                }
+
+ */

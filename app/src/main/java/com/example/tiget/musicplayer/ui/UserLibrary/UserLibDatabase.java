@@ -30,7 +30,7 @@ public class UserLibDatabase {
     public void load() {
         // получаем будильники в виде строки
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        final String s = preferences.getString("USER_LIB_SONGS", "");
+        final String s = preferences.getString("SONG1", "");
         // десериализуем строку
         final Gson gson = new Gson();
         mSongs  = gson.fromJson(s, new TypeToken<List<UserLibSong>>(){}.getType());
@@ -53,7 +53,7 @@ public class UserLibDatabase {
         final Gson gson = new Gson();
         final String s = gson.toJson(mSongs, new TypeToken<List<UserLibSong>>(){}.getType());
         // сохраняем по ключу ALARMS
-        editor.putString("USER_LIB_SONGS", s);
+        editor.putString("SONG1", s);
         editor.apply();
     }
 

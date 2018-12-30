@@ -31,23 +31,31 @@ public class MediaPlayerFragment extends Fragment {
     ImageView mSongPreview;
 
 
-    String mSongName;
-    String mAuthorName;
-    int mPreviewImageResId;
-
     ImageView mBackButton;
-    ImageView mPauseButton;
+    public static ImageView mPauseButton;
     ImageView mForwardButton;
     ImageView mRewindButton;
 
     SeekBar mTimeline;
     SeekBar mVolumeBar;
 
-    public static MediaPlayerFragment newInstance(UserLibSong constructor) {
+    private static String mSongUri;
+    private static String mAuthorName;
+    private static String mSongName;
+    private static int mResId;
+
+
+    public static MediaPlayerFragment newInstance(String SongUri, String AuthorName, String SongName, int ResId) {
         MediaPlayerFragment fragment = new MediaPlayerFragment();
-        Bundle argument = new Bundle();
-        argument.putSerializable("Constructor", constructor);
-        fragment.setArguments(argument);
+
+        mSongUri = SongUri;
+        mAuthorName = AuthorName;
+        mSongName = SongName;
+        mResId = ResId;
+
+        //Bundle argument = new Bundle();
+        //argument.putSerializable("Constructor", constructor);
+        //fragment.setArguments(argument);
         return fragment;
     }
 
@@ -57,10 +65,7 @@ public class MediaPlayerFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         context = getContext();
         View view = inflater.inflate(R.layout.media_player_fragment, container, false);
-        final UserLibSong song = (UserLibSong) getArguments().getSerializable("Constructor");
-
-
-
+        //final UserLibSong song = (UserLibSong) getArguments().getSerializable("Constructor");
 
         mBackButton = view.findViewById(R.id.backBtn);
         mPauseButton = view.findViewById(R.id.pauseBtn);
@@ -78,18 +83,14 @@ public class MediaPlayerFragment extends Fragment {
         SongNameTextView = view.findViewById(R.id.SongNameTextView);
 
 
-        mSongName = song.SongName;
-        mAuthorName = song.AuthorName;
-        mPreviewImageResId = song.SongPreview;
-
 
         SongNameTextView.setText(mSongName);
         AuthorNameTextView.setText(mAuthorName);
-        mSongPreview.setImageResource(mPreviewImageResId);
+        mSongPreview.setImageResource(mResId);
 
 
-        //Настраиваем Position Bar
-        mTimeline.setMax(UserLibAdapter.totalTime);
+
+        mTimeline.setMax(UserLibAdapter.mTotalTime);
         mTimeline.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -110,7 +111,6 @@ public class MediaPlayerFragment extends Fragment {
         });
 
 
-        //Настраиваем Volume Bar
         mVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -127,7 +127,7 @@ public class MediaPlayerFragment extends Fragment {
             }
         });
 
-        //Кнопка паузы
+
         mPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -136,33 +136,32 @@ public class MediaPlayerFragment extends Fragment {
             }
         });
 
+
         mForwardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BackgroundService.changeSong(UserLibAdapter.nextSong.SongUri, context);
+                BackgroundService.changeSong(UserLibAdapter.nextSong.getSongUri(), context);
             }
         });
+
 
         mRewindButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BackgroundService.changeSong(UserLibAdapter.previousSong.SongUri, context);
-
+                BackgroundService.changeSong(UserLibAdapter.previousSong.getSongUri(), context);
             }
         });
-
-
 
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, new MusicFragment()).commit();
-                t.showMiniMediaFragment(song, getActivity());
+                t.showMiniMediaFragment(mSongUri, mAuthorName, mSongName, mResId, getActivity());
             }
         });
 
-        //Постоянно получаем текущее время трека, кладем в Message и отпрявляем в Handler
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -177,12 +176,7 @@ public class MediaPlayerFragment extends Fragment {
                 }
             }
         }).start();
-
-
-
-
         return view;
-
     }
 
 
@@ -192,10 +186,12 @@ public class MediaPlayerFragment extends Fragment {
         t.checkPlayButtonState(context, mPauseButton, 0);
     }
 
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
     }
+
 
     //Устанавливаем текущее и оставшееся время
     @SuppressLint("HandlerLeak")
@@ -210,11 +206,11 @@ public class MediaPlayerFragment extends Fragment {
             String elapsedTime = createTimeLabel(currentPosition);
             elapsedTimeLabel.setText(elapsedTime);
 
-            String remainingTime = createTimeLabel(UserLibAdapter.totalTime - currentPosition);
+            String remainingTime = createTimeLabel(UserLibAdapter.mTotalTime - currentPosition);
             remainingTimeLabel.setText("- " + remainingTime);
-
         }
     };
+
 
     public String createTimeLabel(int time) {
         String timeLabel = "";
@@ -226,9 +222,5 @@ public class MediaPlayerFragment extends Fragment {
 
         return timeLabel;
     }
-
-
-
-
 }
 

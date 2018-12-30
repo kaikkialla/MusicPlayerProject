@@ -14,25 +14,39 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.tiget.musicplayer.R;
+import com.example.tiget.musicplayer.ui.UserLibrary.UserLibAdapter;
 import com.example.tiget.musicplayer.ui.UserLibrary.UserLibSong;
 
 
 public class MiniMediaPlayerFragment extends Fragment {
 
-    public static ImageView playBtn;
+    public static ImageView mPauseButton;
     TextView SongNameTextView;
     ImageView SongImage;
     LinearLayout mainContainer;
     static Context context;
+    ImageView mForwardButton;
+
+
+
+    private static String mSongUri;
+    private static String mAuthorName;
+    private static String mSongName;
+    private static int mResId;
 
 
 
 
-    public static MiniMediaPlayerFragment newInstance(UserLibSong constructor) {
+    public static MiniMediaPlayerFragment newInstance(String SongUri, String AuthorName, String SongName, int ResId) {
         MiniMediaPlayerFragment fragment = new MiniMediaPlayerFragment();
-        Bundle argument = new Bundle();
-        argument.putSerializable("Constructor", constructor);
-        fragment.setArguments(argument);
+        mSongUri = SongUri;
+        mAuthorName = AuthorName;
+        mSongName = SongName;
+        mResId = ResId;
+
+        //Bundle argument = new Bundle();
+        //argument.putSerializable("Constructor", constructor);
+        //fragment.setArguments(argument);
         return fragment;
     }
 
@@ -45,9 +59,10 @@ public class MiniMediaPlayerFragment extends Fragment {
         context = getContext();
         View view = inflater.inflate(R.layout.mini_media_player_fragment, container, false);
 
-        playBtn=view.findViewById(R.id.mini_play_btn);
-        SongImage=view.findViewById(R.id.mini_preview);
-        SongNameTextView=view.findViewById(R.id.mini_song_name);
+        mPauseButton = view.findViewById(R.id.mini_play_btn);
+        mForwardButton = view.findViewById(R.id.mini_forward);
+        SongImage = view.findViewById(R.id.mini_preview);
+        SongNameTextView = view.findViewById(R.id.mini_song_name);
         mainContainer = view.findViewById(R.id.mini_song_info_container);
         return view;
 
@@ -56,22 +71,18 @@ public class MiniMediaPlayerFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final UserLibSong constructor = (UserLibSong) getArguments().getSerializable("Constructor");
-        String SongName = constructor.SongName;
-        int SongImageResourceId = constructor.SongPreview;
 
-
-        SongNameTextView.setText(SongName);
-        SongImage.setImageResource(SongImageResourceId);
+        SongNameTextView.setText(mSongName);
+        SongImage.setImageResource(mResId);
 
 
 
 
         //Кнопка паузы
-        playBtn.setOnClickListener(new View.OnClickListener() {
+        mPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                t.checkPlayButtonPressedState(context, playBtn, 1);
+                t.checkPlayButtonPressedState(context, mPauseButton, 1);
 
             }
         });
@@ -81,9 +92,16 @@ public class MiniMediaPlayerFragment extends Fragment {
         mainContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MediaPlayerFragment fragment = MediaPlayerFragment.newInstance(constructor);
-                t.showMediaFragment(constructor, getActivity());
+                MediaPlayerFragment fragment = MediaPlayerFragment.newInstance(mSongUri, mAuthorName, mSongName, mResId);
+                t.showMediaFragment(mSongUri, mAuthorName, mSongName, mResId, getActivity());
                 //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, fragment).commit();
+            }
+        });
+
+        mForwardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BackgroundService.changeSong(UserLibAdapter.nextSong.getSongUri(), context);
             }
         });
     }
@@ -92,7 +110,7 @@ public class MiniMediaPlayerFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        t.checkPlayButtonState(context, playBtn, 1 );
+        t.checkPlayButtonState(context, mPauseButton, 1 );
     }
 
 

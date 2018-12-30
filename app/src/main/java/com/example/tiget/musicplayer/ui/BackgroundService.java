@@ -11,9 +11,11 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.widget.Toast;
 import com.example.tiget.musicplayer.R;
+import com.example.tiget.musicplayer.ui.UserLibrary.UserLibDatabase;
+import com.example.tiget.musicplayer.ui.UserLibrary.UserLibSong;
 
 import java.io.IOException;
-
+import java.util.List;
 
 
 public class BackgroundService extends Service {
@@ -23,6 +25,7 @@ public class BackgroundService extends Service {
     public static Runnable runnable = null;
     public static MediaPlayer mMediaPlayer;
     public static String mSongUri;
+    static boolean isPlaying;
 
     public static final String ACTION_PLAY  = "ACTION_PLAY";
     public static final String ACTION_PAUSE = "ACTION_PAUSE";
@@ -50,14 +53,27 @@ public class BackgroundService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent.getAction() != null) {
             if (intent.getAction().equals(ACTION_PLAY)) {
-                // фокус нужно запрашивать ПЕРЕД КАЖДЫМ PLAY
-                // поэтому у тебя был баг, ты же только один раз запрашивал
                 requestFocus();
                 mMediaPlayer.start();
 
+                if(MiniMediaPlayerFragment.mPauseButton != null) {
+                    t.checkPlayButtonState(context, MiniMediaPlayerFragment.mPauseButton, 1);
+                }
+                if(MediaPlayerFragment.mPauseButton != null) {
+                    t.checkPlayButtonState(context, MediaPlayerFragment.mPauseButton, 0);
+                }
+
+
+
             } else if (intent.getAction().equals(ACTION_PAUSE)) {
                 mMediaPlayer.pause();
-                //MediaPlayerState = false;
+
+                if(MiniMediaPlayerFragment.mPauseButton != null) {
+                    t.checkPlayButtonState(context, MiniMediaPlayerFragment.mPauseButton, 1);
+                }
+                if(MediaPlayerFragment.mPauseButton != null) {
+                    t.checkPlayButtonState(context, MediaPlayerFragment.mPauseButton, 0);
+                }
 
 
             } else if(intent.getAction().equals(ACTION_SET_SONG)) {
@@ -107,11 +123,18 @@ public class BackgroundService extends Service {
                         case (AudioManager.AUDIOFOCUS_LOSS):
                             ComponentName component = new ComponentName(BackgroundService.this, BackgroundService.class);
 
+
                             if (am != null) {
                                 am.unregisterMediaButtonEventReceiver(component);
                             }
-                            MiniMediaPlayerFragment.playBtn.setBackgroundResource(R.drawable.pause_black);//Меняем иконку
                             mMediaPlayer.pause();
+
+                            if(MiniMediaPlayerFragment.mPauseButton != null) {
+                                t.checkPlayButtonState(context, MiniMediaPlayerFragment.mPauseButton, 1);
+                            }
+                            if(MediaPlayerFragment.mPauseButton != null) {
+                                t.checkPlayButtonState(context, MediaPlayerFragment.mPauseButton, 0);
+                            }
 
                             break;
 
@@ -164,5 +187,16 @@ public class BackgroundService extends Service {
                 AudioManager.AUDIOFOCUS_GAIN);
         // в result тебе может вернуться AUDIOFOCUS_REQUEST_FAILED, в этом случае звук не нужно проигрывать
         // см, например,
+    }
+
+
+    private static ChangeListener mChangeListener = null;
+    public static void onChangeListener(ChangeListener listener) {
+        mChangeListener = listener;
+    }
+
+    interface ChangeListener {
+
+        void onChange(MediaPlayer mMediaPlayer);
     }
 }
