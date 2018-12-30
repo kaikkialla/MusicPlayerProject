@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.example.tiget.musicplayer.R;
 import com.example.tiget.musicplayer.ui.BackgroundService;
 import com.example.tiget.musicplayer.ui.MainActivity;
+import com.example.tiget.musicplayer.ui.SongInfoFragment;
 import com.example.tiget.musicplayer.ui.UserLibrary.UserLibDatabase;
 import com.example.tiget.musicplayer.ui.UserLibrary.UserLibSong;
 import com.example.tiget.musicplayer.ui.t;
@@ -66,7 +67,8 @@ public class LibraryAdapter extends RecyclerView.Adapter<ViewHolder> {
         holder.SongInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //t.showSongInfoFragment(song.getSongUri(), song.getAuthorName(), song.getSongName(),song.getSongPreview(), activity);gi
+                final SongInfoFragment fragment = SongInfoFragment.newInstance(song.getSongUri(), song.getAuthorName(), song.getSongName(), song.getSongPreview());
+                activity.getSupportFragmentManager().beginTransaction().add(R.id.FrameLayout, fragment).commit();
             }
         });
 

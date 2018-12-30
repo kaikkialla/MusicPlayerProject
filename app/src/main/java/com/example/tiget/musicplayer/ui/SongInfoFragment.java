@@ -70,7 +70,10 @@ public class SongInfoFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, new MusicFragment()).commit();
-                t.showMiniMediaFragment(mSongUri, mAuthorName, mSongName, mResId, getActivity());
+                if(MiniMediaPlayerFragment.mPauseButton != null) {
+                    t.showMiniMediaFragment(mSongUri, mAuthorName, mSongName, mResId, getActivity());
+                }
+
             }
         });
 
