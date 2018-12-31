@@ -1,6 +1,8 @@
 package com.example.tiget.musicplayer.ui.Library;
 
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -57,7 +59,13 @@ public class LibraryAdapter extends RecyclerView.Adapter<ViewHolder> {
 
         holder.SongName.setText(song.SongName);
         holder.AuthorName.setText(song.AuthorName);
-        holder.SongPreview.setImageResource(song.SongPreview);
+
+        if(mResId != 0) {
+            holder.SongPreview.setImageResource(mResId);
+        } else if(mResId == 0) {
+            holder.SongPreview.setImageResource(R.drawable.no_image_loaded);
+        }
+
 
 
         mDatabase = new UserLibDatabase(activity);
@@ -65,18 +73,20 @@ public class LibraryAdapter extends RecyclerView.Adapter<ViewHolder> {
 
 
         holder.SongInfo.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View view) {
+
                 t.showSongInfoFragment(song.getSongUri(), song.getAuthorName(), song.getSongName(), song.getSongPreview(), activity);
             }
         });
 
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View view) {
                 //Если что-то уже играет
-                Log.e("gagaga", "LIB: " + mSongName);
                 if(BackgroundService.mMediaPlayer != null) {
                     if(mSongUri != song.getSongUri()) {
                         BackgroundService.changeSong(song.getSongUri(), song.getAuthorName(), song.getSongName(), song.getSongPreview(), activity);

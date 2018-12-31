@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="64dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:background="#FFF">
 
@@ -19,11 +19,12 @@
         android:background="@drawable/rectangle_selector"
         >
 
-        <ImageView
+        <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/mini_preview"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_margin="8dp"
+            app:riv_corner_radius="4dp"
             android:scaleType="centerCrop"/>
 
         <TextView

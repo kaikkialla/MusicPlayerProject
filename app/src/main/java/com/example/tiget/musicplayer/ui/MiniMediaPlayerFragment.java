@@ -2,10 +2,13 @@ package com.example.tiget.musicplayer.ui;
 
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,15 +19,16 @@ import android.widget.TextView;
 import com.example.tiget.musicplayer.R;
 import com.example.tiget.musicplayer.ui.UserLibrary.UserLibAdapter;
 import com.example.tiget.musicplayer.ui.UserLibrary.UserLibSong;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 
 public class MiniMediaPlayerFragment extends Fragment {
+    Context context;
 
-    public static ImageView mPauseButton;
-    TextView SongNameTextView;
-    ImageView SongImage;
     LinearLayout mainContainer;
-    static Context context;
+    RoundedImageView SongImage;
+    TextView SongNameTextView;
+    public static ImageView mPauseButton;
     ImageView mForwardButton;
 
 
@@ -73,7 +77,12 @@ public class MiniMediaPlayerFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         SongNameTextView.setText(mSongName);
-        SongImage.setImageResource(mResId);
+        if(mResId != 0) {
+            SongImage.setImageResource(mResId);
+        } else if(mResId == 0) {
+            SongImage.setImageResource(R.drawable.no_image_loaded);
+        }
+
 
 
 
@@ -90,18 +99,17 @@ public class MiniMediaPlayerFragment extends Fragment {
 
         //По нажатию на тело фрагмента, открываем большой MediaPlayer
         mainContainer.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View view) {
                 MediaPlayerFragment fragment = MediaPlayerFragment.newInstance(mSongUri, mAuthorName, mSongName, mResId);
                 t.showMediaFragment(mSongUri, mAuthorName, mSongName, mResId, getActivity());
-                //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, fragment).commit();
             }
         });
 
         mForwardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //BackgroundService.changeSong(UserLibAdapter.nextSong.getSongUri(), context); Old vers
                 BackgroundService.changeSong(UserLibAdapter.nextSong.getSongUri(), UserLibAdapter.nextSong.getAuthorName(),UserLibAdapter.nextSong.getSongName(), UserLibAdapter.nextSong.getSongPreview(),  context);//New vers
             }
         });

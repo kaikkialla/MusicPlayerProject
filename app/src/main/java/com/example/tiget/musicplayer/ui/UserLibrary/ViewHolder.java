@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.tiget.musicplayer.R;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -18,7 +19,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     TextView AuthorName;
     TextView SongName;
     ImageView SongInfo;
-    ImageView SongPreview;
+    RoundedImageView SongPreview;
     LinearLayout mainContainer;
 
 

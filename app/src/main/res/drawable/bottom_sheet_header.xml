@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
+    android:shape="rectangle">
+    <corners
+        android:topLeftRadius="4dp"
+        android:topRightRadius="4dp" />
 
-    <size android:width="32dp"
-        android:height="32dp"/>
-    <solid android:color="#ccc" />
+    <padding android:top="4dp"/><!-- Высота верхнего элемента(Козырька, который все время будет ввеху страницы) -->
+    <solid android:color="#EEE" />
 </shape>

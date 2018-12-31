@@ -3,6 +3,8 @@ package com.example.tiget.musicplayer.ui;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,10 +19,11 @@ import android.widget.TextView;
 import com.example.tiget.musicplayer.R;
 import com.example.tiget.musicplayer.ui.UserLibrary.UserLibDatabase;
 import com.example.tiget.musicplayer.ui.UserLibrary.UserLibSong;
+import com.makeramen.roundedimageview.RoundedImageView;
 
-public class SongInfoFragment extends Fragment {
+public class SongInfoFragment extends BottomSheetDialogFragment {
 
-    private ImageView SongPreviewIV;
+    private RoundedImageView SongPreviewIV;
     private TextView SongNameTV;
     private TextView AuthorNameTV;
     public static ImageView CloseArea;
@@ -69,14 +72,19 @@ public class SongInfoFragment extends Fragment {
         SongPreviewIV = view.findViewById(R.id.photo);
         SongNameTV = view.findViewById(R.id.SongName);
         AuthorNameTV = view.findViewById(R.id.AuthorName);
-        CloseArea = view.findViewById(R.id.closeArea);
+        //CloseArea = view.findViewById(R.id.closeArea);
 
         mLikeSong = view.findViewById(R.id.likeSong);
         mHideSong = view.findViewById(R.id.hideSong);
         mAddSong = view.findViewById(R.id.addSong);
         mRemoveSong = view.findViewById(R.id.removeSong);
 
-        SongPreviewIV.setImageResource(mResId);
+        if(mResId != 0) {
+            SongPreviewIV.setImageResource(mResId);
+        } else if(mResId == 0) {
+            SongPreviewIV.setImageResource(R.drawable.no_image_loaded);
+        }
+
         SongNameTV.setText(mSongName);
         AuthorNameTV.setText(mAuthorName);
 
@@ -88,6 +96,7 @@ public class SongInfoFragment extends Fragment {
  * Half-transparent area below the image. There must be the library fragment underneath it, but something went wrong.
  * Being used to close info fragment on click.
  */
+/*
         CloseArea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,7 +107,7 @@ public class SongInfoFragment extends Fragment {
                 }
             }
         });
-
+*/
 
 
         mAddSong.setOnClickListener(new View.OnClickListener() {

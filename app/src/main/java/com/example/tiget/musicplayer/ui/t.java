@@ -1,11 +1,19 @@
 package com.example.tiget.musicplayer.ui;
 
+import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.transition.Fade;
+import android.transition.Slide;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.widget.ImageView;
 
 import com.example.tiget.musicplayer.R;
@@ -13,6 +21,9 @@ import com.example.tiget.musicplayer.ui.Library.LibraryFragment;
 import com.example.tiget.musicplayer.ui.UserLibrary.UserLibSong;
 
 public class t extends Activity {
+
+    private static final long MOVE_DEFAULT_TIME = 200;
+    private static final long FADE_DEFAULT_TIME = 200;
 
 
 
@@ -73,21 +84,59 @@ public class t extends Activity {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public static void showMiniMediaFragment(String SongUri, String AuthorName, String SongName, int ResId, FragmentActivity activity) {
         MiniMediaPlayerFragment fragment = MiniMediaPlayerFragment.newInstance(SongUri, AuthorName, SongName, ResId);
+        Fade fade = new Fade();
+        fade.setDuration(1000);
+        fragment.setEnterTransition(fade);
+
+        Slide slide = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            slide = new Slide();
+        }
+        slide.setDuration(1000);
+        fragment.setReturnTransition(slide);
         activity.getSupportFragmentManager().beginTransaction().replace(R.id.miniMediaPlayerLayout, fragment).commit();
     }
 
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public static void showMediaFragment(String SongUri, String AuthorName, String SongName, int ResId, FragmentActivity activity) {
-        MediaPlayerFragment mediaPlayerFragment = MediaPlayerFragment.newInstance(SongUri, AuthorName, SongName, ResId);
-        activity.getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, mediaPlayerFragment).commit();
+        MediaPlayerFragment fragment = MediaPlayerFragment.newInstance(SongUri, AuthorName, SongName, ResId);
+
+        /*
+        Fade fade = new Fade();
+        fade.setDuration(1000);
+        fragment.setEnterTransition(fade);
+
+        Slide slide = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            slide = new Slide();
+        }
+        slide.setDuration(1000);
+        fragment.setReturnTransition(slide);
+        */
+        activity.getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.enter_from_left).add(R.id.FrameLayout, fragment ).commit();
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public static void showSongInfoFragment(String SongUri, String AuthorName, String SongName, int ResId, FragmentActivity activity) {
         final SongInfoFragment fragment = SongInfoFragment.newInstance(SongUri, AuthorName, SongName, ResId);
-        activity.getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, fragment).commit();
+
+        //RoundedBottomSheetDialogFragment bottomSheet = new RoundedBottomSheetDialogFragment();
+        fragment.show(activity.getSupportFragmentManager(), "BottomSheet");
+        //Fad fade = new Fade();
+        //Fade fade = new Fade();
+        //fade.setDuration(1000);
+        //fragment.setEnterTransition(fade);
+
+        //Slide slide = new Slide();
+        //slide.setDuration(1000);
+        //fragment.setReturnTransition(slide);
+        //activity.getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.enter_from_left).add(R.id.FrameLayout, fragment).commit();
     }
 
 }

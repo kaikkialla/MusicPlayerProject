@@ -3,11 +3,13 @@ package com.example.tiget.musicplayer.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +21,7 @@ import android.widget.TextView;
 import com.example.tiget.musicplayer.R;
 import com.example.tiget.musicplayer.ui.UserLibrary.UserLibAdapter;
 import com.example.tiget.musicplayer.ui.UserLibrary.UserLibSong;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 
 public class MediaPlayerFragment extends Fragment {
@@ -28,7 +31,7 @@ public class MediaPlayerFragment extends Fragment {
     TextView remainingTimeLabel;
     TextView SongNameTextView;
     TextView AuthorNameTextView;
-    ImageView mSongPreview;
+    RoundedImageView mSongPreview;
 
 
     ImageView mBackButton;
@@ -86,7 +89,14 @@ public class MediaPlayerFragment extends Fragment {
 
         SongNameTextView.setText(mSongName);
         AuthorNameTextView.setText(mAuthorName);
-        mSongPreview.setImageResource(mResId);
+
+        if(mResId != 0) {
+            mSongPreview.setImageResource(mResId);
+        } else if(mResId == 0) {
+            mSongPreview.setImageResource(R.drawable.no_image_loaded);
+        }
+
+
 
 
 
@@ -154,6 +164,7 @@ public class MediaPlayerFragment extends Fragment {
 
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View view) {
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, new MusicFragment()).commit();
