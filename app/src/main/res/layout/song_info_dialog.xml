@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
 
@@ -67,137 +67,148 @@
 
 
 
-        <RelativeLayout
-            android:id="@+id/likeSong"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:background="#FFF"
-            android:paddingLeft="8dp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp">
+            android:orientation="vertical">
+
+
+            <RelativeLayout
+                android:id="@+id/likeSong"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="8dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp">
+
+                <ImageView
+                    android:id="@+id/icon1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/favorite_border"
+                    android:layout_centerVertical="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Like"
+                    android:textColor="@color/colorTextLight"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/icon1"
+                    android:layout_marginLeft="8dp"
+                    android:background="@drawable/rectangle_selector"
+                    android:textSize="18dp"/>
+
+            </RelativeLayout>
+
+
+
+            <RelativeLayout
+                android:id="@+id/hideSong"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/rectangle_selector"
+                android:paddingLeft="8dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp">
+
+                <ImageView
+                    android:id="@+id/icon2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/hide_gray"
+                    android:layout_centerVertical="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Hide this song"
+                    android:textColor="@color/colorTextLight"
+                    android:layout_toRightOf="@+id/icon2"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="8dp"
+                    android:textSize="18dp"/>
+            </RelativeLayout>
+
+
 
             <ImageView
-                android:id="@+id/icon1"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:background="@color/colorTextLight"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
+
+
+            <RelativeLayout
+                android:id="@+id/addSong"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/favorite_border"
-                android:layout_centerVertical="true"/>
+                android:orientation="horizontal"
+                android:background="@drawable/rectangle_selector"
+                android:paddingLeft="8dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp">
 
-            <TextView
-                android:layout_width="wrap_content"
+                <ImageView
+                    android:id="@+id/icon3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/add_gray"
+                    android:layout_centerVertical="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Add to your playlist"
+                    android:textColor="@color/colorTextLight"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/icon3"
+                    android:layout_marginLeft="8dp"
+                    android:textSize="18dp"/>
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/removeSong"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Like"
-                android:textColor="@color/colorTextLight"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/icon1"
-                android:layout_marginLeft="8dp"
-                android:textSize="18dp"/>
+                android:orientation="horizontal"
+                android:background="@drawable/rectangle_selector"
+                android:paddingLeft="8dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp">
 
-        </RelativeLayout>
+                <ImageView
+                    android:id="@+id/icon4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/remove_gray"
+                    android:layout_centerVertical="true"/>
 
-
-
-        <RelativeLayout
-            android:id="@+id/hideSong"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="#FFF"
-            android:paddingLeft="8dp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp">
-
-            <ImageView
-                android:id="@+id/icon2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/hide_gray"
-                android:layout_centerVertical="true"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Hide this song"
-                android:textColor="@color/colorTextLight"
-                android:layout_toRightOf="@+id/icon2"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="8dp"
-                android:textSize="18dp"/>
-        </RelativeLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Remove this song"
+                    android:textColor="@color/colorTextLight"
+                    android:layout_toRightOf="@+id/icon4"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="8dp"
+                    android:textSize="18dp" />
+            </RelativeLayout>
 
 
+        </LinearLayout>
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:background="@color/colorTextLight"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"/>
-
-
-        <RelativeLayout
-            android:id="@+id/addSong"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="#FFF"
-            android:paddingLeft="8dp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp">
-
-            <ImageView
-                android:id="@+id/icon3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/add_gray"
-                android:layout_centerVertical="true"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Add to your playlist"
-                android:textColor="@color/colorTextLight"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/icon3"
-                android:layout_marginLeft="8dp"
-                android:textSize="18dp"/>
-        </RelativeLayout>
-
-
-        <RelativeLayout
-            android:id="@+id/removeSong"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="#FFF"
-            android:paddingLeft="8dp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp">
-
-            <ImageView
-                android:id="@+id/icon4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/remove_gray"
-                android:layout_centerVertical="true"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Remove this song"
-                android:textColor="@color/colorTextLight"
-                android:layout_toRightOf="@+id/icon4"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="8dp"
-                android:textSize="18dp" />
-        </RelativeLayout>
 
     </LinearLayout>
 

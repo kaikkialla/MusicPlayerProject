@@ -101,7 +101,8 @@ public class MiniMediaPlayerFragment extends Fragment {
         mForwardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BackgroundService.changeSong(UserLibAdapter.nextSong.getSongUri(), context);
+                //BackgroundService.changeSong(UserLibAdapter.nextSong.getSongUri(), context); Old vers
+                BackgroundService.changeSong(UserLibAdapter.nextSong.getSongUri(), UserLibAdapter.nextSong.getAuthorName(),UserLibAdapter.nextSong.getSongName(), UserLibAdapter.nextSong.getSongPreview(),  context);//New vers
             }
         });
     }

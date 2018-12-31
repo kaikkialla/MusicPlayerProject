@@ -25,7 +25,10 @@ public class BackgroundService extends Service {
     public static Runnable runnable = null;
     public static MediaPlayer mMediaPlayer;
     public static String mSongUri;
-    static boolean isPlaying;
+    public static String mSongName;
+    public static String mAuthorName;
+    public static int mResId;
+    //static boolean isPlaying;
 
     public static final String ACTION_PLAY  = "ACTION_PLAY";
     public static final String ACTION_PAUSE = "ACTION_PAUSE";
@@ -149,18 +152,24 @@ public class BackgroundService extends Service {
 
 
 
-    public static void setSong(String SongUri, Context context) {
+    public static void setSong(String SongUri, String AuthorName, String SongName, int ResId, Context context) {
         final Intent intent = new Intent(context, BackgroundService.class);
         intent.setAction(ACTION_SET_SONG);
         mSongUri = SongUri;
+        mSongName = SongName;
+        mAuthorName = AuthorName;
+        mResId = ResId;
         context.startService(intent);
     }
 
 
-    public static void changeSong(String SongUri, Context context) {
+    public static void changeSong(String SongUri, String AuthorName, String SongName, int ResId, Context context) {
         final Intent intent = new Intent(context, BackgroundService.class);
         intent.setAction(ACTION__CHANGE_SONG);
         mSongUri = SongUri;
+        mSongName = SongName;
+        mAuthorName = AuthorName;
+        mResId = ResId;
         context.startService(intent);
     }
 

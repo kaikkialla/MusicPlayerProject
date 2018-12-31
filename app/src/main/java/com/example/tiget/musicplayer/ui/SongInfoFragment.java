@@ -65,7 +65,7 @@ public class SongInfoFragment extends Fragment {
         SongNameTV.setText(mSongName);
         AuthorNameTV.setText(mAuthorName);
 
-
+/*
         CloseArea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -74,6 +74,19 @@ public class SongInfoFragment extends Fragment {
                     t.showMiniMediaFragment(mSongUri, mAuthorName, mSongName, mResId, getActivity());
                 }
 
+            }
+        });
+        */
+
+
+        CloseArea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, new MusicFragment()).commit();
+                if(MiniMediaPlayerFragment.mPauseButton != null) {
+                    t.showMiniMediaFragment(BackgroundService.mSongUri, BackgroundService.mAuthorName, BackgroundService.mSongName, BackgroundService.mResId, getActivity());
+
+                }
             }
         });
 

@@ -86,11 +86,8 @@ public class t extends Activity {
     }
 
     public static void showSongInfoFragment(String SongUri, String AuthorName, String SongName, int ResId, FragmentActivity activity) {
-        FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
-        SongInfoFragment fragment = SongInfoFragment.newInstance(SongUri, AuthorName, SongName, ResId);
-        ft.add(R.id.FrameLayout, fragment);
-        ft.commit();
-        //activity.getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, fragment).commit();
+        final SongInfoFragment fragment = SongInfoFragment.newInstance(SongUri, AuthorName, SongName, ResId);
+        activity.getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, fragment).commit();
     }
 
 }

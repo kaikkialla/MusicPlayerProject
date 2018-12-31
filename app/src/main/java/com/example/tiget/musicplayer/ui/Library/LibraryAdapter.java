@@ -67,8 +67,7 @@ public class LibraryAdapter extends RecyclerView.Adapter<ViewHolder> {
         holder.SongInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final SongInfoFragment fragment = SongInfoFragment.newInstance(song.getSongUri(), song.getAuthorName(), song.getSongName(), song.getSongPreview());
-                activity.getSupportFragmentManager().beginTransaction().add(R.id.FrameLayout, fragment).commit();
+                t.showSongInfoFragment(song.getSongUri(), song.getAuthorName(), song.getSongName(), song.getSongPreview(), activity);
             }
         });
 
@@ -80,7 +79,7 @@ public class LibraryAdapter extends RecyclerView.Adapter<ViewHolder> {
                 Log.e("gagaga", "LIB: " + mSongName);
                 if(BackgroundService.mMediaPlayer != null) {
                     if(mSongUri != song.getSongUri()) {
-                        BackgroundService.changeSong(song.getSongUri(), activity);
+                        BackgroundService.changeSong(song.getSongUri(), song.getAuthorName(), song.getSongName(), song.getSongPreview(), activity);
                         t.showMiniMediaFragment(song.getSongUri(), song.getAuthorName(), song.getSongName(),song.getSongPreview(), activity);
                         mSongUri = song.getSongUri();
                     } else if(mSongUri == song.getSongUri()) {
@@ -89,7 +88,7 @@ public class LibraryAdapter extends RecyclerView.Adapter<ViewHolder> {
 
                 //При первом нажатии на песню
                 } else  if(BackgroundService.mMediaPlayer == null){
-                    BackgroundService.setSong(song.getSongUri(), activity);
+                    BackgroundService.setSong(song.getSongUri(), song.getAuthorName(), song.getSongName(), song.getSongPreview(), activity);
                     mSongUri = song.getSongUri();
                     t.showMiniMediaFragment(song.getSongUri(), song.getAuthorName(), song.getSongName(),song.getSongPreview(), activity);
                 }

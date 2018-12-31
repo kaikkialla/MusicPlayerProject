@@ -140,7 +140,7 @@ public class MediaPlayerFragment extends Fragment {
         mForwardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BackgroundService.changeSong(UserLibAdapter.nextSong.getSongUri(), context);
+                BackgroundService.changeSong(UserLibAdapter.nextSong.getSongUri(), UserLibAdapter.nextSong.getAuthorName(),UserLibAdapter.nextSong.getSongName(), UserLibAdapter.nextSong.getSongPreview(),  context);
             }
         });
 
@@ -148,7 +148,7 @@ public class MediaPlayerFragment extends Fragment {
         mRewindButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BackgroundService.changeSong(UserLibAdapter.previousSong.getSongUri(), context);
+                BackgroundService.changeSong(UserLibAdapter.previousSong.getSongUri(), UserLibAdapter.previousSong.getAuthorName(),UserLibAdapter.previousSong.getSongName(), UserLibAdapter.previousSong.getSongPreview(),  context);
             }
         });
 
