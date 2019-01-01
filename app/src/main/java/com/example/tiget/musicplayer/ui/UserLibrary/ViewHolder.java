@@ -19,7 +19,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     TextView AuthorName;
     TextView SongName;
     ImageView SongInfo;
-    RoundedImageView SongPreview;
+    RoundedImageView SongImage;
     LinearLayout mainContainer;
 
 
@@ -32,7 +32,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         AuthorName = itemView.findViewById(R.id.AuthorName);
         SongInfo = itemView.findViewById(R.id.SongInfo);
         SongName = itemView.findViewById(R.id.SongName);
-        SongPreview = itemView.findViewById(R.id.preview);
+        SongImage = itemView.findViewById(R.id.preview);
         mainContainer = itemView.findViewById(R.id.main_container);
 
 

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.example.tiget.musicplayer.R;
 import com.example.tiget.musicplayer.ui.MainActivity;
+import com.example.tiget.musicplayer.ui.Song;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class PlaylistFragment extends Fragment {
     UserLibDatabase mDatabase;
     UserLibAdapter adapter;
 
-    public static PlaylistFragment newInstance(UserLibSong constructor) {
+    public static PlaylistFragment newInstance(Song constructor) {
         PlaylistFragment fragnent = new PlaylistFragment();
         return fragnent;
     }
@@ -58,7 +59,7 @@ public class PlaylistFragment extends Fragment {
         super.onResume();
         mDatabase.setChangeListener(new UserLibDatabase.ChangeListener() {
             @Override
-            public void onChange(List<UserLibSong> alarms) {
+            public void onChange(List<Song> alarms) {
                 adapter.swap(alarms);
             }
         });

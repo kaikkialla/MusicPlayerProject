@@ -1,6 +1,5 @@
 package com.example.tiget.musicplayer.ui;
 
-import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -8,17 +7,13 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.transition.Fade;
 import android.transition.Slide;
-import android.transition.Transition;
-import android.transition.TransitionInflater;
 import android.widget.ImageView;
 
 import com.example.tiget.musicplayer.R;
-import com.example.tiget.musicplayer.ui.Library.LibraryFragment;
-import com.example.tiget.musicplayer.ui.UserLibrary.UserLibSong;
+
+import java.util.List;
 
 public class t extends Activity {
 
@@ -85,8 +80,8 @@ public class t extends Activity {
 
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public static void showMiniMediaFragment(String SongUri, String AuthorName, String SongName, int ResId, FragmentActivity activity) {
-        MiniMediaPlayerFragment fragment = MiniMediaPlayerFragment.newInstance(SongUri, AuthorName, SongName, ResId);
+    public static void showMiniMediaFragment(List<Song> mSongs, int pos, FragmentActivity activity) {
+        MiniMediaPlayerFragment fragment = MiniMediaPlayerFragment.newInstance(mSongs, pos);
         Fade fade = new Fade();
         fade.setDuration(1000);
         fragment.setEnterTransition(fade);
@@ -103,8 +98,8 @@ public class t extends Activity {
 
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public static void showMediaFragment(String SongUri, String AuthorName, String SongName, int ResId, FragmentActivity activity) {
-        MediaPlayerFragment fragment = MediaPlayerFragment.newInstance(SongUri, AuthorName, SongName, ResId);
+    public static void showMediaFragment(List<Song> mSongs, int pos, FragmentActivity activity) {
+        MediaPlayerFragment fragment = MediaPlayerFragment.newInstance(mSongs, pos);
 
         /*
         Fade fade = new Fade();

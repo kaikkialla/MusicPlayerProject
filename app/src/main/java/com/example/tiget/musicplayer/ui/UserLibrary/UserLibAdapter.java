@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.example.tiget.musicplayer.R;
 import com.example.tiget.musicplayer.ui.BackgroundService;
 import com.example.tiget.musicplayer.ui.MainActivity;
+import com.example.tiget.musicplayer.ui.Song;
 import com.example.tiget.musicplayer.ui.t;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +22,10 @@ public class UserLibAdapter extends RecyclerView.Adapter<ViewHolder> {
     MainActivity activity;
 
 
-    public static long mCurrentSongId;
-    public static UserLibSong nextSong;
-    public static UserLibSong previousSong;
+    public static Song nextSong;
+    public static Song previousSong;
 
-    public static List<UserLibSong> mSongs = new ArrayList<>();
+    public static List<Song> mUserLibSongs = new ArrayList<>();
 
     public static String mSongUri;
     public static String mAuthorName;
@@ -53,32 +53,36 @@ public class UserLibAdapter extends RecyclerView.Adapter<ViewHolder> {
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-        final UserLibSong song = mSongs.get(position);
+        final Song song = mUserLibSongs.get(position);
         mSongUri = song.getSongUri();
         mAuthorName = song.getAuthorName();
         mSongName = song.getSongName();
         mResId = song.getSongPreview();
 
 
-        //Log.e("moisgs", mSongName);
 
         holder.SongName.setText(mSongName);
         holder.AuthorName.setText(mAuthorName);
 
-        if(mResId != 0) {
-            holder.SongPreview.setImageResource(mResId);
-        } else if(mResId == 0) {
-            holder.SongPreview.setImageResource(R.drawable.no_image_loaded);
-        }
+
+
+        //if(holder.SongImage.getDrawable() != null) {
+        holder.SongImage.setImageResource(mUserLibSongs.get(position).getSongPreview());
+        //} else if(holder.SongImage.getDrawable() == null) {
+        //holder.SongImage.setImageResource(R.drawable.no_image_loaded);
+        //}
+
 
 
         if(position > 0) {
-            previousSong = mSongs.get(position - 1);
+            previousSong = mUserLibSongs.get(position - 1);
         }
 
-        if(position < mSongs.size() - 1) {
-            nextSong = mSongs.get(position + 1);
+
+        if(position < mUserLibSongs.size() - 1) {
+            nextSong = mUserLibSongs.get(position + 1);
         }
+
 
 
 
@@ -94,20 +98,20 @@ public class UserLibAdapter extends RecyclerView.Adapter<ViewHolder> {
                 if(BackgroundService.mMediaPlayer != null) {
 
                     if(mSongUri != song.SongUri) {
-                        BackgroundService.changeSong(song.getSongUri(), song.getAuthorName(), song.getSongName(),song.getSongPreview(), activity);
-                        t.showMiniMediaFragment(song.getSongUri(), song.getAuthorName(), song.getSongName(),song.getSongPreview(), activity);
+                        BackgroundService.changeSong(mUserLibSongs, position, activity);
+                        t.showMiniMediaFragment(mUserLibSongs, position, activity);
                         mSongUri = song.SongUri;
                     } else if(mSongUri == song.SongUri) {
-                        t.showMediaFragment(song.getSongUri(), song.getAuthorName(), song.getSongName(),song.getSongPreview(), activity);
+                        t.showMediaFragment(mUserLibSongs, position, activity);
                     }
 
                     //При первом нажатии на песню
                 } else  if(BackgroundService.mMediaPlayer == null){
 
-                    BackgroundService.setSong(song.getSongUri(), song.getAuthorName(), song.getSongName(),song.getSongPreview(), activity);
+                    BackgroundService.setSong(mUserLibSongs, position, activity);
                     mSongUri = song.SongUri;
                     //activity.startService(new Intent(activity, BackgroundService.class));
-                    t.showMiniMediaFragment(song.getSongUri(), song.getAuthorName(), song.getSongName(),song.getSongPreview(), activity);
+                    t.showMiniMediaFragment(mUserLibSongs, position, activity);
 
                 }
             }
@@ -131,17 +135,17 @@ public class UserLibAdapter extends RecyclerView.Adapter<ViewHolder> {
     }
 
 
-    public void swap(List<UserLibSong> songs) {
+    public void swap(List<Song> songs) {
         if (songs != null) {
-            mSongs.clear();
-            mSongs.addAll(songs);
+            mUserLibSongs.clear();
+            mUserLibSongs.addAll(songs);
             notifyDataSetChanged();
         }
     }
 
     @Override
     public int getItemCount() {
-        return mSongs.size();
+        return mUserLibSongs.size();
 
     }
 }

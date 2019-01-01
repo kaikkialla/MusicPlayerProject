@@ -20,8 +20,9 @@ import android.widget.TextView;
 
 import com.example.tiget.musicplayer.R;
 import com.example.tiget.musicplayer.ui.UserLibrary.UserLibAdapter;
-import com.example.tiget.musicplayer.ui.UserLibrary.UserLibSong;
 import com.makeramen.roundedimageview.RoundedImageView;
+
+import java.util.List;
 
 
 public class MediaPlayerFragment extends Fragment {
@@ -29,9 +30,9 @@ public class MediaPlayerFragment extends Fragment {
 
     TextView elapsedTimeLabel;
     TextView remainingTimeLabel;
-    TextView SongNameTextView;
-    TextView AuthorNameTextView;
-    RoundedImageView mSongPreview;
+    TextView SongName;
+    TextView AuthorName;
+    RoundedImageView SongImage;
 
 
     ImageView mBackButton;
@@ -47,18 +48,15 @@ public class MediaPlayerFragment extends Fragment {
     private static String mSongName;
     private static int mResId;
 
+    private static int mPos;
+    private static List<Song> mSongs;
 
-    public static MediaPlayerFragment newInstance(String SongUri, String AuthorName, String SongName, int ResId) {
+    public static MediaPlayerFragment newInstance(List<Song> songs, int pos) {
         MediaPlayerFragment fragment = new MediaPlayerFragment();
+        mSongs = songs;
+        mPos = pos;
 
-        mSongUri = SongUri;
-        mAuthorName = AuthorName;
-        mSongName = SongName;
-        mResId = ResId;
 
-        //Bundle argument = new Bundle();
-        //argument.putSerializable("Constructor", constructor);
-        //fragment.setArguments(argument);
         return fragment;
     }
 
@@ -68,7 +66,6 @@ public class MediaPlayerFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         context = getContext();
         View view = inflater.inflate(R.layout.media_player_fragment, container, false);
-        //final UserLibSong song = (UserLibSong) getArguments().getSerializable("Constructor");
 
         mBackButton = view.findViewById(R.id.backBtn);
         mPauseButton = view.findViewById(R.id.pauseBtn);
@@ -81,22 +78,26 @@ public class MediaPlayerFragment extends Fragment {
         elapsedTimeLabel = view.findViewById(R.id.elapsedTimeLabel);
         remainingTimeLabel = view.findViewById(R.id.remainingTimeLabel);
 
-        mSongPreview = view.findViewById(R.id.SongImage);
-        AuthorNameTextView = view.findViewById(R.id.AuthorNameTextView);
-        SongNameTextView = view.findViewById(R.id.SongNameTextView);
+        SongImage = view.findViewById(R.id.SongImage);
+        AuthorName = view.findViewById(R.id.AuthorNameTextView);
+        SongName = view.findViewById(R.id.SongNameTextView);
+
+
+        mSongUri = mSongs.get(mPos).getSongUri();
+        mAuthorName = mSongs.get(mPos).getAuthorName();
+        mSongName = mSongs.get(mPos).getSongName();
+        mResId = mSongs.get(mPos).getSongPreview();
 
 
 
-        SongNameTextView.setText(mSongName);
-        AuthorNameTextView.setText(mAuthorName);
+        SongName.setText(mSongName);
+        AuthorName.setText(mAuthorName);
 
         if(mResId != 0) {
-            mSongPreview.setImageResource(mResId);
+            SongImage.setImageResource(mResId);
         } else if(mResId == 0) {
-            mSongPreview.setImageResource(R.drawable.no_image_loaded);
+            SongImage.setImageResource(R.drawable.no_image_loaded);
         }
-
-
 
 
 
@@ -150,7 +151,15 @@ public class MediaPlayerFragment extends Fragment {
         mForwardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BackgroundService.changeSong(UserLibAdapter.nextSong.getSongUri(), UserLibAdapter.nextSong.getAuthorName(),UserLibAdapter.nextSong.getSongName(), UserLibAdapter.nextSong.getSongPreview(),  context);
+                BackgroundService.changeSong(mSongs, mPos + 1, context);
+                mPos = mPos + 1;
+
+                SongName.setText(mSongs.get(mPos).getSongName());
+                if(SongImage.getDrawable() != null) {
+                    SongImage.setImageResource(mSongs.get(mPos).getSongPreview());
+                } else if(SongImage.getDrawable() == null) {
+                    SongImage.setImageResource(R.drawable.no_image_loaded);
+                }
             }
         });
 
@@ -158,7 +167,16 @@ public class MediaPlayerFragment extends Fragment {
         mRewindButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BackgroundService.changeSong(UserLibAdapter.previousSong.getSongUri(), UserLibAdapter.previousSong.getAuthorName(),UserLibAdapter.previousSong.getSongName(), UserLibAdapter.previousSong.getSongPreview(),  context);
+                BackgroundService.changeSong(mSongs, mPos - 1,  context);
+                mPos = mPos - 1;
+
+                SongName.setText(mSongs.get(mPos).getSongName());
+                if(SongImage.getDrawable() != null) {
+                    SongImage.setImageResource(mSongs.get(mPos).getSongPreview());
+                } else if(SongImage.getDrawable() == null) {
+                    SongImage.setImageResource(R.drawable.no_image_loaded);
+                }
+
             }
         });
 
@@ -168,7 +186,7 @@ public class MediaPlayerFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, new MusicFragment()).commit();
-                t.showMiniMediaFragment(mSongUri, mAuthorName, mSongName, mResId, getActivity());
+                t.showMiniMediaFragment(mSongs, mPos, getActivity());
             }
         });
 
@@ -233,5 +251,6 @@ public class MediaPlayerFragment extends Fragment {
 
         return timeLabel;
     }
+
 }
 

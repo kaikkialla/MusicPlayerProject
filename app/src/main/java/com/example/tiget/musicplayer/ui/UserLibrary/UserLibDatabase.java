@@ -4,6 +4,8 @@ package com.example.tiget.musicplayer.ui.UserLibrary;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+
+import com.example.tiget.musicplayer.ui.Song;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ import java.util.List;
 public class UserLibDatabase {
 
     private Context mContext;
-    private static List<UserLibSong> mSongs = new ArrayList<>();
+    private static List<Song> mSongs = new ArrayList<>();
 
     /**
      * Переменная хранит слушатель изменений в базе данных.
@@ -33,7 +35,7 @@ public class UserLibDatabase {
         final String s = preferences.getString("SONG1", "");
         // десериализуем строку
         final Gson gson = new Gson();
-        mSongs  = gson.fromJson(s, new TypeToken<List<UserLibSong>>(){}.getType());
+        mSongs  = gson.fromJson(s, new TypeToken<List<Song>>(){}.getType());
         if (mSongs == null) {
             mSongs = new ArrayList<>();
         }
@@ -51,7 +53,7 @@ public class UserLibDatabase {
         final SharedPreferences.Editor editor = preferences.edit();
         // превращаем в строку (сериализуем)
         final Gson gson = new Gson();
-        final String s = gson.toJson(mSongs, new TypeToken<List<UserLibSong>>(){}.getType());
+        final String s = gson.toJson(mSongs, new TypeToken<List<Song>>(){}.getType());
         // сохраняем по ключу ALARMS
         editor.putString("SONG1", s);
         editor.apply();
@@ -61,7 +63,7 @@ public class UserLibDatabase {
      * Метод добавляет будильник в базу данных (и сохраняет изменения в локальное хранилище).
      * @param song Будильник, который нужно добавить.
      */
-    public void addSong(UserLibSong song) {
+    public void addSong(Song song) {
         mSongs.add(song);
         if (mChangeListener != null) {
             mChangeListener.onChange(mSongs);
@@ -94,7 +96,7 @@ public class UserLibDatabase {
     /**
      * Возвращает список будильников.
      */
-    public static List<UserLibSong> getSongs() {
+    public static List<Song> getSongs() {
         return mSongs;
     }
 
@@ -112,7 +114,7 @@ public class UserLibDatabase {
     Метод возвращает true/false в зависимости от наличия/отсутствия песни в плейлисте. @param mSongUri - уникальная ссылка на песню.
      */
     public boolean alreadyExists(String mSongUri) {
-        for(UserLibSong song : mSongs) {
+        for(Song song : mSongs) {
             if(song.SongUri.equals(mSongUri)) {
                 return true;
             }
@@ -130,7 +132,7 @@ public class UserLibDatabase {
          * Будет вызываться после каждого изменения списка будильников.
          * @param songs Актуальный список будильников.
          */
-        void onChange(List<UserLibSong> songs);
+        void onChange(List<Song> songs);
     }
 
 }

@@ -10,12 +10,10 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.widget.Toast;
-import com.example.tiget.musicplayer.R;
-import com.example.tiget.musicplayer.ui.UserLibrary.UserLibDatabase;
-import com.example.tiget.musicplayer.ui.UserLibrary.UserLibSong;
-
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+
 
 
 public class BackgroundService extends Service {
@@ -28,13 +26,13 @@ public class BackgroundService extends Service {
     public static String mSongName;
     public static String mAuthorName;
     public static int mResId;
-    //static boolean isPlaying;
 
     public static final String ACTION_PLAY  = "ACTION_PLAY";
     public static final String ACTION_PAUSE = "ACTION_PAUSE";
     public static final String ACTION_SET_SONG = "ACTION_SET_SONG";
     public static final String ACTION__CHANGE_SONG = "ACTION__CHANGE_SONG";
 
+    public static List<Song> mSongs = new ArrayList<>();
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -92,20 +90,20 @@ public class BackgroundService extends Service {
 
 
             } else if(intent.getAction().equals(ACTION__CHANGE_SONG)) {
-                    mMediaPlayer.reset();//Сбрасываем текущую песню
-                    try {
-                        mMediaPlayer.setDataSource(context, Uri.parse(mSongUri));//Включаем ту, на которую нажали
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                mMediaPlayer.reset();//Сбрасываем текущую песню
+                try {
+                    mMediaPlayer.setDataSource(context, Uri.parse(mSongUri));//Включаем ту, на которую нажали
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-                    try {
-                        mMediaPlayer.prepare();//Что-то делаем, не знаю что, но надо
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    mMediaPlayer.prepare();//Что-то делаем, не знаю что, но надо
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-                    mMediaPlayer.start();//Запускаем
+                mMediaPlayer.start();//Запускаем
             }
 
 
@@ -152,24 +150,24 @@ public class BackgroundService extends Service {
 
 
 
-    public static void setSong(String SongUri, String AuthorName, String SongName, int ResId, Context context) {
+    public static void setSong(List<Song> mSongs, int pos,  Context context) {
         final Intent intent = new Intent(context, BackgroundService.class);
         intent.setAction(ACTION_SET_SONG);
-        mSongUri = SongUri;
-        mSongName = SongName;
-        mAuthorName = AuthorName;
-        mResId = ResId;
+        mSongUri = mSongs.get(pos).getSongUri();
+        mSongName = mSongs.get(pos).getSongName();
+        mAuthorName = mSongs.get(pos).getAuthorName();
+        mResId = mSongs.get(pos).getSongPreview();
         context.startService(intent);
     }
 
 
-    public static void changeSong(String SongUri, String AuthorName, String SongName, int ResId, Context context) {
+    public static void changeSong(List<Song> mSongs, int pos, Context context) {
         final Intent intent = new Intent(context, BackgroundService.class);
         intent.setAction(ACTION__CHANGE_SONG);
-        mSongUri = SongUri;
-        mSongName = SongName;
-        mAuthorName = AuthorName;
-        mResId = ResId;
+        mSongUri = mSongs.get(pos).getSongUri();
+        mSongName = mSongs.get(pos).getSongName();
+        mAuthorName = mSongs.get(pos).getAuthorName();
+        mResId = mSongs.get(pos).getSongPreview();
         context.startService(intent);
     }
 

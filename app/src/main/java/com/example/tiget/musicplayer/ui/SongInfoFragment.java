@@ -3,12 +3,8 @@ package com.example.tiget.musicplayer.ui;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +14,6 @@ import android.widget.TextView;
 
 import com.example.tiget.musicplayer.R;
 import com.example.tiget.musicplayer.ui.UserLibrary.UserLibDatabase;
-import com.example.tiget.musicplayer.ui.UserLibrary.UserLibSong;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 public class SongInfoFragment extends BottomSheetDialogFragment {
@@ -92,23 +87,6 @@ public class SongInfoFragment extends BottomSheetDialogFragment {
 
 
 
-/**
- * Half-transparent area below the image. There must be the library fragment underneath it, but something went wrong.
- * Being used to close info fragment on click.
- */
-/*
-        CloseArea.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, new MusicFragment()).commit();
-                if(MiniMediaPlayerFragment.mPauseButton != null) {
-                    t.showMiniMediaFragment(BackgroundService.mSongUri, BackgroundService.mAuthorName, BackgroundService.mSongName, BackgroundService.mResId, getActivity());
-
-                }
-            }
-        });
-*/
-
 
         mAddSong.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,7 +94,7 @@ public class SongInfoFragment extends BottomSheetDialogFragment {
                 if(mDatabase.alreadyExists(mSongUri)) {
                     Snackbar.make(mAddSong, "Данная песня уже у вас в плейлисте", Snackbar.LENGTH_SHORT).show();
                 } else {
-                    mDatabase.addSong(new UserLibSong(0, mAuthorName, mSongName, mSongUri, mResId));
+                    mDatabase.addSong(new Song(0, mAuthorName, mSongName, mSongUri, mResId));
                     Snackbar.make(mAddSong, "Песня добавлена в ваш плейлист", Snackbar.LENGTH_SHORT).show();
                 }
             }

@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +17,9 @@ import android.widget.TextView;
 
 import com.example.tiget.musicplayer.R;
 import com.example.tiget.musicplayer.ui.UserLibrary.UserLibAdapter;
-import com.example.tiget.musicplayer.ui.UserLibrary.UserLibSong;
 import com.makeramen.roundedimageview.RoundedImageView;
+
+import java.util.List;
 
 
 public class MiniMediaPlayerFragment extends Fragment {
@@ -27,7 +27,7 @@ public class MiniMediaPlayerFragment extends Fragment {
 
     LinearLayout mainContainer;
     RoundedImageView SongImage;
-    TextView SongNameTextView;
+    TextView SongName;
     public static ImageView mPauseButton;
     ImageView mForwardButton;
 
@@ -38,19 +38,16 @@ public class MiniMediaPlayerFragment extends Fragment {
     private static String mSongName;
     private static int mResId;
 
+    private static int mPos;
+    private static List<Song> mSongs;
 
 
-
-    public static MiniMediaPlayerFragment newInstance(String SongUri, String AuthorName, String SongName, int ResId) {
+    public static MiniMediaPlayerFragment newInstance(List<Song> songs, int pos) {
         MiniMediaPlayerFragment fragment = new MiniMediaPlayerFragment();
-        mSongUri = SongUri;
-        mAuthorName = AuthorName;
-        mSongName = SongName;
-        mResId = ResId;
 
-        //Bundle argument = new Bundle();
-        //argument.putSerializable("Constructor", constructor);
-        //fragment.setArguments(argument);
+        mSongs = songs;
+        mPos = pos;
+
         return fragment;
     }
 
@@ -66,7 +63,7 @@ public class MiniMediaPlayerFragment extends Fragment {
         mPauseButton = view.findViewById(R.id.mini_play_btn);
         mForwardButton = view.findViewById(R.id.mini_forward);
         SongImage = view.findViewById(R.id.mini_preview);
-        SongNameTextView = view.findViewById(R.id.mini_song_name);
+        SongName = view.findViewById(R.id.mini_song_name);
         mainContainer = view.findViewById(R.id.mini_song_info_container);
         return view;
 
@@ -76,7 +73,13 @@ public class MiniMediaPlayerFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        SongNameTextView.setText(mSongName);
+
+        mSongUri = mSongs.get(mPos).getSongUri();
+        mAuthorName = mSongs.get(mPos).getAuthorName();
+        mSongName = mSongs.get(mPos).getSongName();
+        mResId = mSongs.get(mPos).getSongPreview();
+
+        SongName.setText(mSongName);
         if(mResId != 0) {
             SongImage.setImageResource(mResId);
         } else if(mResId == 0) {
@@ -92,7 +95,6 @@ public class MiniMediaPlayerFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 t.checkPlayButtonPressedState(context, mPauseButton, 1);
-
             }
         });
 
@@ -102,15 +104,25 @@ public class MiniMediaPlayerFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View view) {
-                MediaPlayerFragment fragment = MediaPlayerFragment.newInstance(mSongUri, mAuthorName, mSongName, mResId);
-                t.showMediaFragment(mSongUri, mAuthorName, mSongName, mResId, getActivity());
+                //MediaPlayerFragment fragment = MediaPlayerFragment.newInstance(mSongUri, mAuthorName, mSongName, mResId);
+                t.showMediaFragment(mSongs, mPos, getActivity());
             }
         });
 
+
         mForwardButton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View view) {
-                BackgroundService.changeSong(UserLibAdapter.nextSong.getSongUri(), UserLibAdapter.nextSong.getAuthorName(),UserLibAdapter.nextSong.getSongName(), UserLibAdapter.nextSong.getSongPreview(),  context);//New vers
+                BackgroundService.changeSong(mSongs, mPos + 1,  context);//New vers
+                mPos = mPos + 1;
+
+                SongName.setText(mSongs.get(mPos).getSongName());
+                if(SongImage.getDrawable() != null) {
+                    SongImage.setImageResource(mSongs.get(mPos).getSongPreview());
+                } else if(SongImage.getDrawable() == null) {
+                    SongImage.setImageResource(R.drawable.no_image_loaded);
+                }
             }
         });
     }
@@ -121,12 +133,5 @@ public class MiniMediaPlayerFragment extends Fragment {
         super.onResume();
         t.checkPlayButtonState(context, mPauseButton, 1 );
     }
-
-
-
-
-
-
-
 }
 

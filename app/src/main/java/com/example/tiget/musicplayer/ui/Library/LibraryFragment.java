@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 
 import com.example.tiget.musicplayer.R;
 import com.example.tiget.musicplayer.ui.MainActivity;
+import com.example.tiget.musicplayer.ui.Song;
 import com.example.tiget.musicplayer.ui.UserLibrary.UserLibDatabase;
-import com.example.tiget.musicplayer.ui.UserLibrary.UserLibSong;
 
 
 public class LibraryFragment extends Fragment {
@@ -22,7 +22,7 @@ public class LibraryFragment extends Fragment {
     UserLibDatabase mDatabase;
     LibraryAdapter adapter;
 
-    public static LibraryFragment  newInstance(UserLibSong constructor) {
+    public static LibraryFragment  newInstance(Song constructor) {
         LibraryFragment  fragnent = new LibraryFragment();
         return fragnent;
     }
