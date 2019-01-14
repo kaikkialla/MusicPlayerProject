@@ -1,6 +1,5 @@
 package com.example.tiget.musicplayer.ui;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
@@ -8,7 +7,6 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.transition.Fade;
-import android.transition.Slide;
 import android.widget.ImageView;
 
 import com.example.tiget.musicplayer.R;
@@ -20,16 +18,12 @@ public class t extends Activity {
     private static final long MOVE_DEFAULT_TIME = 200;
     private static final long FADE_DEFAULT_TIME = 200;
 
+    public static String mLibraryFragmentTag = "LibraryFragment";
+    public static String mUserLibraryFragmentTag = "UserLibraryFragment";
+    public static String mMediaPlayerFragmentTag = "MediaPlayerFragment";
+    public static String mMiniMediaPlayerFragmentTag = "MiniMediaPlayerFragment";
+    public static String mSongInfoFragmentTag = "SongInfoFragment";
 
-
-    public static void showFragment(Fragment fragment, FragmentActivity activity) {
-        activity
-                .getSupportFragmentManager()
-                .beginTransaction()
-                .setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left)
-                .replace(R.id.FrameLayout, fragment)
-                .commit();
-    }
 
 
     public static void checkPlayButtonPressedState(Context context, ImageView imageView, int color) {
@@ -79,49 +73,56 @@ public class t extends Activity {
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public static void showMiniMediaFragment(List<Song> mSongs, int pos, FragmentActivity activity) {
-        MiniMediaPlayerFragment fragment = MiniMediaPlayerFragment.newInstance(mSongs, pos);
-        Fade fade = new Fade();
-        fade.setDuration(1000);
-        fragment.setEnterTransition(fade);
 
-        Slide slide = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            slide = new Slide();
-        }
-        slide.setDuration(1000);
-        fragment.setReturnTransition(slide);
-        activity.getSupportFragmentManager().beginTransaction().replace(R.id.miniMediaPlayerLayout, fragment).commit();
+
+
+
+
+
+    public static void showFragment(Fragment fragment, FragmentActivity activity,  String tag) {
+        activity
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_bottom, R.anim.exit_to_right, R.anim.exit_to_bottom, R.anim.exit_to_left)
+                .replace(R.id.f, fragment, tag)
+                .commit();
     }
 
 
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public static void showMediaFragment(List<Song> mSongs, int pos, FragmentActivity activity) {
+    public static void showMiniMediaFragment(List<Song> mSongs, int pos, FragmentActivity activity, String tag) {
+        MiniMediaPlayerFragment fragment = MiniMediaPlayerFragment.newInstance(mSongs, pos);
+
+        Fade fade = new Fade();
+        fade.setDuration(1000);
+        fragment.setEnterTransition(fade);
+
+        activity
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.miniMediaPlayerLayout, fragment, tag)
+                .commit();
+    }
+
+
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public static void showMediaFragment(List<Song> mSongs, int pos, FragmentActivity activity, String tag) {
         MediaPlayerFragment fragment = MediaPlayerFragment.newInstance(mSongs, pos);
 
-        /*
-        Fade fade = new Fade();
-        fade.setDuration(1000);
-        fragment.setEnterTransition(fade);
-
-        Slide slide = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            slide = new Slide();
-        }
-        slide.setDuration(1000);
-        fragment.setReturnTransition(slide);
-        */
-        activity.getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.enter_from_left).add(R.id.FrameLayout, fragment ).commit();
+        activity
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_bottom, R.anim.enter_from_bottom)
+                .add(R.id.f, fragment, tag)
+                .commit();
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+
+
     public static void showSongInfoFragment(String SongUri, String AuthorName, String SongName, int ResId, FragmentActivity activity) {
         final SongInfoFragment fragment = SongInfoFragment.newInstance(SongUri, AuthorName, SongName, ResId);
-
-        //RoundedBottomSheetDialogFragment bottomSheet = new RoundedBottomSheetDialogFragment();
         fragment.show(activity.getSupportFragmentManager(), "BottomSheet");
         //Fad fade = new Fade();
         //Fade fade = new Fade();

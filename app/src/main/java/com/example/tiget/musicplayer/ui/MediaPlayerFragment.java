@@ -3,6 +3,8 @@ package com.example.tiget.musicplayer.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,29 +13,37 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.example.tiget.musicplayer.BuildConfig;
 import com.example.tiget.musicplayer.R;
-import com.example.tiget.musicplayer.ui.UserLibrary.UserLibAdapter;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
 
+import static com.example.tiget.musicplayer.ui.MainActivity.MARGIN_LEFT_PX;
+import static com.example.tiget.musicplayer.ui.MainActivity.MARGIN_RIGHT_PX;
+import static com.example.tiget.musicplayer.ui.MainActivity.SCREEN_HEIGHT_PX;
+import static com.example.tiget.musicplayer.ui.MainActivity.SCREEN_WIDTH_PX;
+
 
 public class MediaPlayerFragment extends Fragment {
     Context context;
+    View view;
 
     TextView elapsedTimeLabel;
     TextView remainingTimeLabel;
     TextView SongName;
     TextView AuthorName;
     RoundedImageView SongImage;
-
+    LinearLayout positionBarLayout;
 
     ImageView mBackButton;
     public static ImageView mPauseButton;
@@ -55,18 +65,30 @@ public class MediaPlayerFragment extends Fragment {
         MediaPlayerFragment fragment = new MediaPlayerFragment();
         mSongs = songs;
         mPos = pos;
-
-
         return fragment;
     }
+
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         context = getContext();
-        View view = inflater.inflate(R.layout.media_player_fragment, container, false);
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            view = inflater.inflate(R.layout.media_player_landscape, container, false);
 
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            view = inflater.inflate(R.layout.media_player_portrait, container, false);
+        }
+        return view;
+    }
+
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mBackButton = view.findViewById(R.id.backBtn);
         mPauseButton = view.findViewById(R.id.pauseBtn);
         mRewindButton = view.findViewById(R.id.rewindBtn);
@@ -75,6 +97,7 @@ public class MediaPlayerFragment extends Fragment {
         mTimeline = view.findViewById(R.id.positionBar);
         mVolumeBar = view.findViewById(R.id.volumeBar);
 
+        positionBarLayout = view.findViewById(R.id.positionBarLayout);
         elapsedTimeLabel = view.findViewById(R.id.elapsedTimeLabel);
         remainingTimeLabel = view.findViewById(R.id.remainingTimeLabel);
 
@@ -83,10 +106,25 @@ public class MediaPlayerFragment extends Fragment {
         SongName = view.findViewById(R.id.SongNameTextView);
 
 
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+            setImageSize(Configuration.ORIENTATION_LANDSCAPE);
+            setTimelineSize(Configuration.ORIENTATION_LANDSCAPE);
+
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT){
+
+            setImageSize(Configuration.ORIENTATION_PORTRAIT);
+            setTimelineSize(Configuration.ORIENTATION_PORTRAIT);
+
+        }
+
+
         mSongUri = mSongs.get(mPos).getSongUri();
         mAuthorName = mSongs.get(mPos).getAuthorName();
         mSongName = mSongs.get(mPos).getSongName();
         mResId = mSongs.get(mPos).getSongPreview();
+
 
 
 
@@ -101,13 +139,11 @@ public class MediaPlayerFragment extends Fragment {
 
 
 
-        mTimeline.setMax(UserLibAdapter.mTotalTime);
+        mTimeline.setMax(BackgroundService.mMediaPlayer.getDuration() / 1000);
         mTimeline.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 if (b) {
-                    BackgroundService.mMediaPlayer.seekTo(i);
-                    BackgroundService.mMediaPlayer.start();
                     mTimeline.setProgress(i);
                 }
             }
@@ -118,6 +154,8 @@ public class MediaPlayerFragment extends Fragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                BackgroundService.seekTo(seekBar.getProgress(), context);
+                Log.e("jsgs", String.valueOf(seekBar.getProgress()));
             }
         });
 
@@ -151,15 +189,11 @@ public class MediaPlayerFragment extends Fragment {
         mForwardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BackgroundService.changeSong(mSongs, mPos + 1, context);
+                //BackgroundService.changeSong(mSongs, mPos + 1, context);
+                BackgroundService.setNextSong(mSongs, mPos, context);
                 mPos = mPos + 1;
 
-                SongName.setText(mSongs.get(mPos).getSongName());
-                if(SongImage.getDrawable() != null) {
-                    SongImage.setImageResource(mSongs.get(mPos).getSongPreview());
-                } else if(SongImage.getDrawable() == null) {
-                    SongImage.setImageResource(R.drawable.no_image_loaded);
-                }
+                changeInfo();
             }
         });
 
@@ -167,15 +201,13 @@ public class MediaPlayerFragment extends Fragment {
         mRewindButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*
                 BackgroundService.changeSong(mSongs, mPos - 1,  context);
+                */
+                BackgroundService.setPreviousSongSong(mSongs, mPos, context);
                 mPos = mPos - 1;
 
-                SongName.setText(mSongs.get(mPos).getSongName());
-                if(SongImage.getDrawable() != null) {
-                    SongImage.setImageResource(mSongs.get(mPos).getSongPreview());
-                } else if(SongImage.getDrawable() == null) {
-                    SongImage.setImageResource(R.drawable.no_image_loaded);
-                }
+                changeInfo();
 
             }
         });
@@ -185,8 +217,8 @@ public class MediaPlayerFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View view) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.FrameLayout, new MusicFragment()).commit();
-                t.showMiniMediaFragment(mSongs, mPos, getActivity());
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.f, new MusicFragment()).commit();
+                t.showMiniMediaFragment(mSongs, mPos, getActivity(), t.mMediaPlayerFragmentTag);
             }
         });
 
@@ -205,8 +237,89 @@ public class MediaPlayerFragment extends Fragment {
                 }
             }
         }).start();
-        return view;
     }
+
+
+
+    //Устанавливаем текущее и оставшееся время
+    @SuppressLint("HandlerLeak")
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            int currentPosition = msg.what / 1000;
+            int duration = BackgroundService.mMediaPlayer.getDuration() / 1000;
+
+        //Updating Position Bar
+
+
+        Log.e("gsgmsgmsogus", duration + " / " + currentPosition + " / " + (duration - currentPosition));
+
+        if(currentPosition != duration) {
+            mTimeline.setProgress(currentPosition);
+
+            //Update Labels
+            String elapsedTime = createTimeLabel(currentPosition);
+            elapsedTimeLabel.setText(elapsedTime);
+
+            String remainingTime = createTimeLabel(duration - currentPosition);
+            remainingTimeLabel.setText("- " + remainingTime);
+
+        } else if(currentPosition == duration) {
+            BackgroundService.setNextSong(mSongs, mPos, context);
+            mPos = mPos + 1;
+
+
+
+        }
+
+        }
+    };
+
+
+    public String createTimeLabel(int time) {
+        String timeLabel = "";
+        int min = time / 60;
+        int sec = time % 60;
+        timeLabel = min + ":";
+        if (sec < 10) timeLabel += "0";
+        timeLabel += sec;
+
+        return timeLabel;
+    }
+
+
+    public void setImageSize(int orientation) {
+        if(orientation == Configuration.ORIENTATION_PORTRAIT) {
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(SCREEN_WIDTH_PX - MARGIN_LEFT_PX - MARGIN_RIGHT_PX, SCREEN_WIDTH_PX - MARGIN_LEFT_PX - MARGIN_RIGHT_PX);
+            params.setMargins(MARGIN_LEFT_PX,0,MARGIN_RIGHT_PX,0);
+            SongImage.setLayoutParams(params);
+
+        } else if(orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(SCREEN_WIDTH_PX / 2 - MARGIN_LEFT_PX - MARGIN_RIGHT_PX, SCREEN_WIDTH_PX / 2 - MARGIN_LEFT_PX - MARGIN_RIGHT_PX);
+            params.setMargins(MARGIN_LEFT_PX,0,MARGIN_RIGHT_PX,0);
+            SongImage.setLayoutParams(params);
+
+        }
+    }
+
+    public void setTimelineSize(int orientation) {
+        if(orientation == Configuration.ORIENTATION_PORTRAIT) {
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(SCREEN_WIDTH_PX - MARGIN_LEFT_PX - MARGIN_RIGHT_PX, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(MARGIN_LEFT_PX, MARGIN_LEFT_PX, MARGIN_RIGHT_PX,0);
+            positionBarLayout.setLayoutParams(params);
+
+        } else if(orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(SCREEN_WIDTH_PX / 2 - MARGIN_LEFT_PX - MARGIN_RIGHT_PX, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(MARGIN_LEFT_PX,0,MARGIN_RIGHT_PX,0);
+            positionBarLayout.setLayoutParams(params);
+
+        }
+    }
+
 
 
     @Override
@@ -216,41 +329,36 @@ public class MediaPlayerFragment extends Fragment {
     }
 
 
+
+//При смене ориентации меняем расположение элементов
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        int orientation=newConfig.orientation;
 
+        switch(orientation) {
+            case Configuration.ORIENTATION_LANDSCAPE:
+//to do something
+                getActivity().setContentView(R.layout.media_player_landscape);
 
-    //Устанавливаем текущее и оставшееся время
-    @SuppressLint("HandlerLeak")
-    private Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            int currentPosition = msg.what;
-            //Updating Position Bar
-            mTimeline.setProgress(currentPosition);
+                break;
+            case Configuration.ORIENTATION_PORTRAIT:
+//to do something
+                getActivity().setContentView(R.layout.media_player_portrait);
 
-            //Update Labels
-            String elapsedTime = createTimeLabel(currentPosition);
-            elapsedTimeLabel.setText(elapsedTime);
+                break;
 
-            String remainingTime = createTimeLabel(UserLibAdapter.mTotalTime - currentPosition);
-            remainingTimeLabel.setText("- " + remainingTime);
         }
-    };
-
-
-    public String createTimeLabel(int time) {
-        String timeLabel = "";
-        int min = time / 1000 / 60;
-        int sec = time / 1000 % 60;
-        timeLabel = min + ":";
-        if (sec < 10) timeLabel += "0";
-        timeLabel += sec;
-
-        return timeLabel;
     }
 
+
+    public void changeInfo() {
+        SongName.setText(mSongs.get(mPos).getSongName());
+        if(SongImage.getDrawable() != null) {
+            SongImage.setImageResource(mSongs.get(mPos).getSongPreview());
+        } else if(SongImage.getDrawable() == null) {
+            SongImage.setImageResource(R.drawable.no_image_loaded);
+        }
+    }
 }
 

@@ -2,12 +2,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal">
+    android:gravity="center_horizontal"
+    android:id="@+id/kohoagnoaoganou">
 
 
 
     <FrameLayout
-        android:id="@+id/FrameLayout"
+        android:id="@+id/f"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

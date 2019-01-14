@@ -97,17 +97,17 @@ public class LibraryAdapter extends RecyclerView.Adapter<ViewHolder> {
                 if(BackgroundService.mMediaPlayer != null) {
                     if(mSongUri != song.getSongUri()) {
                         BackgroundService.changeSong(mLibSongs, position, activity);
-                        t.showMiniMediaFragment(mLibSongs, position, activity);
+                        t.showMiniMediaFragment(mLibSongs, position, activity, t.mLibraryFragmentTag);
                         mSongUri = song.getSongUri();
                     } else if(mSongUri == song.getSongUri()) {
-                        t.showMediaFragment(mLibSongs, position, activity);
+                        t.showMediaFragment(mLibSongs, position, activity, t.mLibraryFragmentTag);
                     }
 
                     //При первом нажатии на песню
                 } else  if(BackgroundService.mMediaPlayer == null){
                     BackgroundService.setSong(mLibSongs, position, activity);
                     mSongUri = song.getSongUri();
-                    t.showMiniMediaFragment(mLibSongs, position, activity);
+                    t.showMiniMediaFragment(mLibSongs, position, activity, t.mLibraryFragmentTag);
                 }
             }
         });

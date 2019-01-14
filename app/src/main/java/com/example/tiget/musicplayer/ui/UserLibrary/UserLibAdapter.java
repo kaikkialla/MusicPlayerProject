@@ -99,10 +99,10 @@ public class UserLibAdapter extends RecyclerView.Adapter<ViewHolder> {
 
                     if(mSongUri != song.SongUri) {
                         BackgroundService.changeSong(mUserLibSongs, position, activity);
-                        t.showMiniMediaFragment(mUserLibSongs, position, activity);
+                        t.showMiniMediaFragment(mUserLibSongs, position, activity, t.mUserLibraryFragmentTag);
                         mSongUri = song.SongUri;
                     } else if(mSongUri == song.SongUri) {
-                        t.showMediaFragment(mUserLibSongs, position, activity);
+                        t.showMediaFragment(mUserLibSongs, position, activity, t.mUserLibraryFragmentTag);
                     }
 
                     //При первом нажатии на песню
@@ -111,7 +111,7 @@ public class UserLibAdapter extends RecyclerView.Adapter<ViewHolder> {
                     BackgroundService.setSong(mUserLibSongs, position, activity);
                     mSongUri = song.SongUri;
                     //activity.startService(new Intent(activity, BackgroundService.class));
-                    t.showMiniMediaFragment(mUserLibSongs, position, activity);
+                    t.showMiniMediaFragment(mUserLibSongs, position, activity, t.mUserLibraryFragmentTag);
 
                 }
             }

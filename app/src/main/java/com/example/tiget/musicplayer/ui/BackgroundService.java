@@ -27,12 +27,19 @@ public class BackgroundService extends Service {
     public static String mAuthorName;
     public static int mResId;
 
-    public static final String ACTION_PLAY  = "ACTION_PLAY";
-    public static final String ACTION_PAUSE = "ACTION_PAUSE";
-    public static final String ACTION_SET_SONG = "ACTION_SET_SONG";
-    public static final String ACTION__CHANGE_SONG = "ACTION__CHANGE_SONG";
 
-    public static List<Song> mSongs = new ArrayList<>();
+    private static final String ACTION_PLAY  = "ACTION_PLAY";
+    private static final String ACTION_PAUSE = "ACTION_PAUSE";
+    private static final String ACTION_SET_SONG = "ACTION_SET_SONG";
+    private static final String ACTION_CHANGE_SONG = "ACTION_CHANGE_SONG";
+    private static final String ACTION_SET_NEXT_SONG = "ACTION_SET_NEXT_SONG";
+    private static final String ACTION_SET_PREVIOUS_SONG = "ACTION_SET_PREVIOUS_SONG";
+    private static final String ACTION_SEEK_TO = "ACTION_SEEK_TO";
+
+    public static int currentTime;
+
+
+    public static List<Song> songs = new ArrayList<>();
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -54,21 +61,19 @@ public class BackgroundService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent.getAction() != null) {
             if (intent.getAction().equals(ACTION_PLAY)) {
+
                 requestFocus();
                 mMediaPlayer.start();
-
                 if(MiniMediaPlayerFragment.mPauseButton != null) {
                     t.checkPlayButtonState(context, MiniMediaPlayerFragment.mPauseButton, 1);
                 }
                 if(MediaPlayerFragment.mPauseButton != null) {
                     t.checkPlayButtonState(context, MediaPlayerFragment.mPauseButton, 0);
                 }
-
-
 
             } else if (intent.getAction().equals(ACTION_PAUSE)) {
-                mMediaPlayer.pause();
 
+                mMediaPlayer.pause();
                 if(MiniMediaPlayerFragment.mPauseButton != null) {
                     t.checkPlayButtonState(context, MiniMediaPlayerFragment.mPauseButton, 1);
                 }
@@ -76,8 +81,8 @@ public class BackgroundService extends Service {
                     t.checkPlayButtonState(context, MediaPlayerFragment.mPauseButton, 0);
                 }
 
-
             } else if(intent.getAction().equals(ACTION_SET_SONG)) {
+
                 try{
                     mMediaPlayer = MediaPlayer.create(context, Uri.parse(mSongUri));//Создаем MediaPlayer
                     mMediaPlayer.setLooping(false);//Песня не будет повторяться
@@ -88,24 +93,54 @@ public class BackgroundService extends Service {
                     Toast.makeText(context, "Невозможно произвести данную аудиозапись", Toast.LENGTH_SHORT).show();
                 }
 
+            } else if(intent.getAction().equals(ACTION_CHANGE_SONG)) {
 
-            } else if(intent.getAction().equals(ACTION__CHANGE_SONG)) {
                 mMediaPlayer.reset();//Сбрасываем текущую песню
                 try {
                     mMediaPlayer.setDataSource(context, Uri.parse(mSongUri));//Включаем ту, на которую нажали
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
                 try {
                     mMediaPlayer.prepare();//Что-то делаем, не знаю что, но надо
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
                 mMediaPlayer.start();//Запускаем
-            }
 
+            } else if(intent.getAction().equals(ACTION_SET_PREVIOUS_SONG)) {
+
+                mMediaPlayer.reset();//Сбрасываем текущую песню
+                try {
+                    mMediaPlayer.setDataSource(context, Uri.parse(mSongUri));//Включаем ту, на которую нажали
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    mMediaPlayer.prepare();//Что-то делаем, не знаю что, но надо
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                mMediaPlayer.start();//Запускаем
+
+            } else if(intent.getAction().equals(ACTION_SET_NEXT_SONG)) {
+                mMediaPlayer.reset();//Сбрасываем текущую песню
+                try {
+                    mMediaPlayer.setDataSource(context, Uri.parse(mSongUri));//Включаем ту, на которую нажали
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    mMediaPlayer.prepare();//Что-то делаем, не знаю что, но надо
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                mMediaPlayer.start();//Запускаем
+
+            } else if(intent.getAction().equals(ACTION_SEEK_TO)) {
+                mMediaPlayer.seekTo(currentTime);
+
+            }
 
 
 
@@ -124,7 +159,6 @@ public class BackgroundService extends Service {
                         case (AudioManager.AUDIOFOCUS_LOSS):
                             ComponentName component = new ComponentName(BackgroundService.this, BackgroundService.class);
 
-
                             if (am != null) {
                                 am.unregisterMediaButtonEventReceiver(component);
                             }
@@ -136,7 +170,6 @@ public class BackgroundService extends Service {
                             if(MediaPlayerFragment.mPauseButton != null) {
                                 t.checkPlayButtonState(context, MediaPlayerFragment.mPauseButton, 0);
                             }
-
                             break;
 
                         //Если аудиоканал свободен(он занят, даже если другая музыка стоит на паузе)
@@ -150,26 +183,18 @@ public class BackgroundService extends Service {
 
 
 
-    public static void setSong(List<Song> mSongs, int pos,  Context context) {
-        final Intent intent = new Intent(context, BackgroundService.class);
-        intent.setAction(ACTION_SET_SONG);
-        mSongUri = mSongs.get(pos).getSongUri();
-        mSongName = mSongs.get(pos).getSongName();
-        mAuthorName = mSongs.get(pos).getAuthorName();
-        mResId = mSongs.get(pos).getSongPreview();
-        context.startService(intent);
+
+    private void requestFocus() {
+        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        int result = am.requestAudioFocus(focusChangeListener,
+                AudioManager.STREAM_MUSIC,
+                AudioManager.AUDIOFOCUS_GAIN);
+        // в result тебе может вернуться AUDIOFOCUS_REQUEST_FAILED, в этом случае звук не нужно проигрывать
+        // см, например,
     }
 
 
-    public static void changeSong(List<Song> mSongs, int pos, Context context) {
-        final Intent intent = new Intent(context, BackgroundService.class);
-        intent.setAction(ACTION__CHANGE_SONG);
-        mSongUri = mSongs.get(pos).getSongUri();
-        mSongName = mSongs.get(pos).getSongName();
-        mAuthorName = mSongs.get(pos).getAuthorName();
-        mResId = mSongs.get(pos).getSongPreview();
-        context.startService(intent);
-    }
+
 
 
     public static void resume(Context context) {
@@ -187,23 +212,68 @@ public class BackgroundService extends Service {
     }
 
 
-    private void requestFocus() {
-        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        int result = am.requestAudioFocus(focusChangeListener,
-                AudioManager.STREAM_MUSIC,
-                AudioManager.AUDIOFOCUS_GAIN);
-        // в result тебе может вернуться AUDIOFOCUS_REQUEST_FAILED, в этом случае звук не нужно проигрывать
-        // см, например,
+    public static void setSong(List<Song> mSongs, int pos,  Context context) {
+        final Intent intent = new Intent(context, BackgroundService.class);
+        intent.setAction(ACTION_SET_SONG);
+
+        songs = mSongs;
+        mSongUri = mSongs.get(pos).getSongUri();
+        mSongName = mSongs.get(pos).getSongName();
+        mAuthorName = mSongs.get(pos).getAuthorName();
+        mResId = mSongs.get(pos).getSongPreview();
+
+        context.startService(intent);
     }
 
 
-    private static ChangeListener mChangeListener = null;
-    public static void onChangeListener(ChangeListener listener) {
-        mChangeListener = listener;
+    public static void changeSong(List<Song> mSongs, int pos, Context context) {
+        final Intent intent = new Intent(context, BackgroundService.class);
+        intent.setAction(ACTION_CHANGE_SONG);
+
+        songs = mSongs;
+        mSongUri = mSongs.get(pos).getSongUri();
+        mSongName = mSongs.get(pos).getSongName();
+        mAuthorName = mSongs.get(pos).getAuthorName();
+        mResId = mSongs.get(pos).getSongPreview();
+
+        context.startService(intent);
     }
 
-    interface ChangeListener {
 
-        void onChange(MediaPlayer mMediaPlayer);
+    public static void setNextSong(List<Song> mSongs, int pos, Context context) {
+        final Intent intent = new Intent(context, BackgroundService.class);
+        intent.setAction(ACTION_SET_NEXT_SONG);
+
+        songs = mSongs;
+        mSongUri = mSongs.get(pos + 1).getSongUri();
+        mSongName = mSongs.get(pos + 1).getSongName();
+        mAuthorName = mSongs.get(pos + 1).getAuthorName();
+        mResId = mSongs.get(pos + 1).getSongPreview();
+
+        context.startService(intent);
     }
+
+
+    public static void setPreviousSongSong(List<Song> mSongs, int pos, Context context) {
+        final Intent intent = new Intent(context, BackgroundService.class);
+        intent.setAction(ACTION_SET_PREVIOUS_SONG);
+
+        songs = mSongs;
+        mSongUri = mSongs.get(pos - 1).getSongUri();
+        mSongName = mSongs.get(pos - 1).getSongName();
+        mAuthorName = mSongs.get(pos - 1).getAuthorName();
+        mResId = mSongs.get(pos - 1).getSongPreview();
+
+        context.startService(intent);
+    }
+
+    public static void seekTo(int time, Context context) {
+        final Intent intent = new Intent(context, BackgroundService.class);
+        intent.setAction(ACTION_SET_PREVIOUS_SONG);
+
+        currentTime = time;
+
+        context.startService(intent);
+    }
+
 }

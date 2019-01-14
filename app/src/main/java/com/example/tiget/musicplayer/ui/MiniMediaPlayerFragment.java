@@ -105,7 +105,7 @@ public class MiniMediaPlayerFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //MediaPlayerFragment fragment = MediaPlayerFragment.newInstance(mSongUri, mAuthorName, mSongName, mResId);
-                t.showMediaFragment(mSongs, mPos, getActivity());
+                t.showMediaFragment(mSongs, mPos, getActivity(), t.mMiniMediaPlayerFragmentTag);
             }
         });
 
@@ -114,7 +114,8 @@ public class MiniMediaPlayerFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View view) {
-                BackgroundService.changeSong(mSongs, mPos + 1,  context);//New vers
+                //BackgroundService.changeSong(mSongs, mPos + 1,  context);
+                BackgroundService.setNextSong(mSongs, mPos, context);
                 mPos = mPos + 1;
 
                 SongName.setText(mSongs.get(mPos).getSongName());

@@ -11,6 +11,7 @@
 
 
 
+
     <LinearLayout
         android:id="@+id/mini_song_info_container"
         android:layout_width="match_parent"

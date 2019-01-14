@@ -11,7 +11,7 @@
     <ImageView
         android:id="@+id/backBtn"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="32dp"
         android:src="@drawable/arrow_down_gray"
         android:background="@drawable/rectangle_selector"/>
 
@@ -19,37 +19,47 @@
     <com.makeramen.roundedimageview.RoundedImageView
         app:riv_corner_radius="4dp"
         android:id="@+id/SongImage"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
         android:scaleType="centerCrop"
         />
 
-    <SeekBar
-        android:id="@+id/positionBar"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"/>
-
-
     <LinearLayout
+        android:id="@+id/positionBarLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:id="@+id/elapsedTimeLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0:11"
-            android:layout_marginLeft="0dp"/>
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/remainingTimeLabel"
-            android:layout_width="wrap_content"
+
+        <SeekBar
+            android:id="@+id/positionBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="-1:49"
-            android:layout_marginLeft="240dp"/>
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/elapsedTimeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0:00"
+                android:layout_alignParentLeft="true"/>
+
+            <TextView
+                android:id="@+id/remainingTimeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-1:49"
+                android:layout_alignParentRight="true"/>
+
+        </RelativeLayout>
+
 
     </LinearLayout>
+
 
 
     <LinearLayout
@@ -98,8 +108,8 @@
 
         <ImageView
             android:id="@+id/pauseBtn"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
             android:src="@drawable/pause_black"
             android:background="@drawable/circular_selector"
             android:layout_centerInParent="true"/>
