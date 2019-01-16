@@ -30,6 +30,8 @@ import java.util.List;
 
 import static com.example.tiget.musicplayer.ui.MainActivity.MARGIN_LEFT_PX;
 import static com.example.tiget.musicplayer.ui.MainActivity.MARGIN_RIGHT_PX;
+import static com.example.tiget.musicplayer.ui.MainActivity.MARGIN_TOP_DP;
+import static com.example.tiget.musicplayer.ui.MainActivity.MARGIN_TOP_PX;
 import static com.example.tiget.musicplayer.ui.MainActivity.SCREEN_HEIGHT_PX;
 import static com.example.tiget.musicplayer.ui.MainActivity.SCREEN_WIDTH_PX;
 
@@ -308,7 +310,7 @@ public class MediaPlayerFragment extends Fragment {
         if(orientation == Configuration.ORIENTATION_PORTRAIT) {
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(SCREEN_WIDTH_PX - MARGIN_LEFT_PX - MARGIN_RIGHT_PX, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.setMargins(MARGIN_LEFT_PX, MARGIN_LEFT_PX, MARGIN_RIGHT_PX,0);
+            params.setMargins(MARGIN_LEFT_PX, MARGIN_TOP_PX, MARGIN_RIGHT_PX,0);
             positionBarLayout.setLayoutParams(params);
 
         } else if(orientation == Configuration.ORIENTATION_LANDSCAPE) {
