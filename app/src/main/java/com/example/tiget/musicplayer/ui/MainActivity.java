@@ -61,3 +61,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 }
+
+
+/**
+ * TODO
+ *
+ * Перенести получение текущей позиции трека в Background Service, добавить смену песни по окончанию, seek bar
+ */
