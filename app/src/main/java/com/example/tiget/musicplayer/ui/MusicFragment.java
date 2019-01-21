@@ -1,6 +1,13 @@
 package com.example.tiget.musicplayer.ui;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,6 +16,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +33,10 @@ public class MusicFragment extends Fragment {
 
     ViewPager mViewPager;
     ViewPagerAdapter mViewPagerAdapter;
+    PagerSlidingTabStrip tabs;
+
+
+
 
     @Nullable
     @Override
@@ -33,6 +45,7 @@ public class MusicFragment extends Fragment {
         return v;
     }
 
+    @SuppressLint("ResourceType")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -41,23 +54,14 @@ public class MusicFragment extends Fragment {
         mViewPagerAdapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
         mViewPager.setAdapter(mViewPagerAdapter);
 
+        tabs = view.findViewById(R.id.tabs);
 
-
-// Bind the tabs to the ViewPager
-        PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) view.findViewById(R.id.pagerTabStrip);
-
-        final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
-                .getDisplayMetrics());
-        mViewPager.setPageMargin(pageMargin);
-
-        //mViewPager.setCurrentItem(1);
-
-        //changeColor(ContextCompat.getColor(getActivity().getBaseContext(), Color.GREEN));
         tabs.setViewPager(mViewPager);
-
-
-
     }
+
+
+
+
 
     public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         public ViewPagerAdapter(FragmentManager fm) {

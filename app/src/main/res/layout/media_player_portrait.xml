@@ -85,7 +85,7 @@
             android:textAlignment="center"
             android:layout_gravity="center_horizontal"
             android:textSize="18dp"
-            android:textColor="@color/colorBlue"/>
+            android:textColor="@color/colorTextBlue"/>
 
 
     </LinearLayout>
