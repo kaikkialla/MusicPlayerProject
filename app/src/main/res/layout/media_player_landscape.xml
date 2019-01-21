@@ -114,19 +114,20 @@
 
                 <ImageView
                     android:id="@+id/rewindBtn"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:src="@drawable/previous_song_black"
                     android:background="@drawable/circular_selector"
                     android:layout_toLeftOf="@id/pauseBtn"
                     android:layout_centerInParent="true"
-                    android:layout_marginRight="16dp"/>
+                    android:layout_marginRight="16dp"
+                    android:padding="2dp"/>
 
 
                 <ImageView
                     android:id="@+id/pauseBtn"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
+                    android:layout_width="54dp"
+                    android:layout_height="54dp"
                     android:src="@drawable/pause_black"
                     android:background="@drawable/circular_selector"
                     android:layout_centerInParent="true"/>
@@ -135,13 +136,14 @@
 
                 <ImageView
                     android:id="@+id/forwardBtn"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:src="@drawable/next_song_black"
                     android:background="@drawable/circular_selector"
                     android:layout_toRightOf="@id/pauseBtn"
                     android:layout_centerInParent="true"
-                    android:layout_marginLeft="16dp"/>
+                    android:layout_marginLeft="16dp"
+                    android:padding="2dp"/>
 
             </RelativeLayout>
 

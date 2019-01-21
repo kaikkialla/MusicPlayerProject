@@ -12,6 +12,11 @@ import com.example.tiget.musicplayer.R;
 
 public class MainActivity extends AppCompatActivity {
 
+
+    public static int DEFAULT_ALPHA = 255;
+    public static int PRESSED_ALPHA = 100;
+
+
     public static int SCREEN_WIDTH_PX;
     public static int SCREEN_HEIGHT_PX;
 
@@ -38,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         float density = getResources().getDisplayMetrics().density;
+
 
 
         SCREEN_WIDTH_DP = dm.widthPixels / density;

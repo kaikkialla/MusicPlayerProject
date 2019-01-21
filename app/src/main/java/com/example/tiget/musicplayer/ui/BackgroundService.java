@@ -1,5 +1,6 @@
 package com.example.tiget.musicplayer.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
@@ -9,10 +10,16 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
+import android.util.Log;
 import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 
 
 
@@ -22,6 +29,7 @@ public class BackgroundService extends Service {
     public Handler handler = null;
     public static Runnable runnable = null;
     public static MediaPlayer mMediaPlayer;
+
     public static String mSongUri;
     public static String mSongName;
     public static String mAuthorName;
@@ -36,10 +44,19 @@ public class BackgroundService extends Service {
     private static final String ACTION_SET_PREVIOUS_SONG = "ACTION_SET_PREVIOUS_SONG";
     private static final String ACTION_SEEK_TO = "ACTION_SEEK_TO";
 
-    public static int currentTime;
+    public static int mTime;
+    public static int mDuration;
 
 
     public static List<Song> songs = new ArrayList<>();
+    public static int pos;
+
+
+    private static ChangeListener mChangeListener = null;
+    //public static boolean isPlaying;
+
+
+
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -58,28 +75,57 @@ public class BackgroundService extends Service {
     }
 
 
+
+
+
+    /*
+    Log.e("fisfsjufs", songs.size() + " / " + pos);
+    */
+
+
+
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+
         if (intent.getAction() != null) {
             if (intent.getAction().equals(ACTION_PLAY)) {
 
                 requestFocus();
+
                 mMediaPlayer.start();
+                //isPlaying = true;
+
+
+
                 if(MiniMediaPlayerFragment.mPauseButton != null) {
                     t.checkPlayButtonState(context, MiniMediaPlayerFragment.mPauseButton, 1);
                 }
                 if(MediaPlayerFragment.mPauseButton != null) {
                     t.checkPlayButtonState(context, MediaPlayerFragment.mPauseButton, 0);
                 }
+
 
             } else if (intent.getAction().equals(ACTION_PAUSE)) {
 
+
+
                 mMediaPlayer.pause();
+                //isPlaying = false;
+
+
+
                 if(MiniMediaPlayerFragment.mPauseButton != null) {
                     t.checkPlayButtonState(context, MiniMediaPlayerFragment.mPauseButton, 1);
                 }
                 if(MediaPlayerFragment.mPauseButton != null) {
                     t.checkPlayButtonState(context, MediaPlayerFragment.mPauseButton, 0);
                 }
+
+
+                /*
+                 * SET SONG
+                 */
+
 
             } else if(intent.getAction().equals(ACTION_SET_SONG)) {
 
@@ -89,65 +135,117 @@ public class BackgroundService extends Service {
                     mMediaPlayer.seekTo(0);//Песня влючится на 0й секунде
                     mMediaPlayer.setVolume(0.3f, 0.7f);//Начальная громкость
                     mMediaPlayer.start();//Запускаем
+
+
+
+                    //isPlaying = true;
+
+
+
                 } catch (Exception e) {
                     Toast.makeText(context, "Невозможно произвести данную аудиозапись", Toast.LENGTH_SHORT).show();
                 }
 
+                EventBus.getDefault().post(new SongChangedEvent(songs, pos));
+
+
+                /*
+                 * CHANGE SONG
+                 */
+
+
             } else if(intent.getAction().equals(ACTION_CHANGE_SONG)) {
 
-                mMediaPlayer.reset();//Сбрасываем текущую песню
-                try {
-                    mMediaPlayer.setDataSource(context, Uri.parse(mSongUri));//Включаем ту, на которую нажали
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    mMediaPlayer.prepare();//Что-то делаем, не знаю что, но надо
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                mMediaPlayer.start();//Запускаем
+
+                //isPlaying = true;
+
+                changeSong();
+
+                EventBus.getDefault().post(new SongChangedEvent(songs, pos));
+
+
+                /*
+                 * PREV SONG
+                 */
+
 
             } else if(intent.getAction().equals(ACTION_SET_PREVIOUS_SONG)) {
 
-                mMediaPlayer.reset();//Сбрасываем текущую песню
-                try {
-                    mMediaPlayer.setDataSource(context, Uri.parse(mSongUri));//Включаем ту, на которую нажали
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    mMediaPlayer.prepare();//Что-то делаем, не знаю что, но надо
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                mMediaPlayer.start();//Запускаем
+                changeSong();
+                //isPlaying = true;
+
+
+
+                EventBus.getDefault().post(new SongChangedEvent(songs, pos));
+
+
+                /*
+                 * NEXT SONG
+                 */
+
 
             } else if(intent.getAction().equals(ACTION_SET_NEXT_SONG)) {
-                mMediaPlayer.reset();//Сбрасываем текущую песню
-                try {
-                    mMediaPlayer.setDataSource(context, Uri.parse(mSongUri));//Включаем ту, на которую нажали
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    mMediaPlayer.prepare();//Что-то делаем, не знаю что, но надо
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                changeSong();
+
                 mMediaPlayer.start();//Запускаем
+                //isPlaying = true;
+
+                EventBus.getDefault().post(new SongChangedEvent(songs, pos));
 
             } else if(intent.getAction().equals(ACTION_SEEK_TO)) {
-                mMediaPlayer.seekTo(currentTime);
+
+                if(mTime != mDuration) {
+                    mMediaPlayer.seekTo(mTime);
+                }
 
             }
-
-
-
         }
+
+
+
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (mMediaPlayer != null) {
+                    try {
+                        Message msg = new Message();
+                        msg.what = mMediaPlayer.getCurrentPosition();
+                        mHandler.sendMessage(msg);
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ignored) {
+                    }
+                }
+            }
+        }).start();
+
 
         return START_STICKY_COMPATIBILITY;
     }
+
+
+
+    //Устанавливаем текущее и оставшееся время
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            int time = msg.what / 1000;
+            int duration = mMediaPlayer.getDuration() / 1000;
+
+            if(time < duration) {
+                EventBus.getDefault().post(new TimeChangedEvent(time, duration));
+            } else if(time >= duration) {
+                duration = 0;
+                time = 0;
+                setNextSong(songs, pos, context);
+            }
+        }
+    };
+
+
+
+
 
 
     private AudioManager.OnAudioFocusChangeListener focusChangeListener =
@@ -162,7 +260,13 @@ public class BackgroundService extends Service {
                             if (am != null) {
                                 am.unregisterMediaButtonEventReceiver(component);
                             }
+
+
+
                             mMediaPlayer.pause();
+                            //isPlaying = false;
+
+
 
                             if(MiniMediaPlayerFragment.mPauseButton != null) {
                                 t.checkPlayButtonState(context, MiniMediaPlayerFragment.mPauseButton, 1);
@@ -175,8 +279,6 @@ public class BackgroundService extends Service {
                         //Если аудиоканал свободен(он занят, даже если другая музыка стоит на паузе)
                         case (AudioManager.AUDIOFOCUS_REQUEST_GRANTED):
                             break;
-
-
                     }
                 }
             };
@@ -204,7 +306,6 @@ public class BackgroundService extends Service {
     }
 
 
-
     public static void pause(Context context) {
         final Intent intent = new Intent(context, BackgroundService.class);
         intent.setAction(ACTION_PAUSE);
@@ -212,68 +313,161 @@ public class BackgroundService extends Service {
     }
 
 
-    public static void setSong(List<Song> mSongs, int pos,  Context context) {
+    public static void setSong(List<Song> mSongs, int i,  Context context) {
         final Intent intent = new Intent(context, BackgroundService.class);
         intent.setAction(ACTION_SET_SONG);
 
         songs = mSongs;
-        mSongUri = mSongs.get(pos).getSongUri();
-        mSongName = mSongs.get(pos).getSongName();
-        mAuthorName = mSongs.get(pos).getAuthorName();
-        mResId = mSongs.get(pos).getSongPreview();
+        pos = i;
+
+        mSongUri = mSongs.get(i).getSongUri();
+        mSongName = mSongs.get(i).getSongName();
+        mAuthorName = mSongs.get(i).getAuthorName();
+        mResId = mSongs.get(i).getSongPreview();
 
         context.startService(intent);
     }
 
 
-    public static void changeSong(List<Song> mSongs, int pos, Context context) {
+    public static void changeSong(List<Song> mSongs, int i, Context context) {
         final Intent intent = new Intent(context, BackgroundService.class);
         intent.setAction(ACTION_CHANGE_SONG);
 
         songs = mSongs;
-        mSongUri = mSongs.get(pos).getSongUri();
-        mSongName = mSongs.get(pos).getSongName();
-        mAuthorName = mSongs.get(pos).getAuthorName();
-        mResId = mSongs.get(pos).getSongPreview();
+        pos = i;
+
+        mSongUri = mSongs.get(i).getSongUri();
+        mSongName = mSongs.get(i).getSongName();
+        mAuthorName = mSongs.get(i).getAuthorName();
+        mResId = mSongs.get(i).getSongPreview();
 
         context.startService(intent);
     }
 
 
-    public static void setNextSong(List<Song> mSongs, int pos, Context context) {
+    public static void setNextSong(List<Song> mSongs, int i, Context context) {
         final Intent intent = new Intent(context, BackgroundService.class);
         intent.setAction(ACTION_SET_NEXT_SONG);
 
-        songs = mSongs;
-        mSongUri = mSongs.get(pos + 1).getSongUri();
-        mSongName = mSongs.get(pos + 1).getSongName();
-        mAuthorName = mSongs.get(pos + 1).getAuthorName();
-        mResId = mSongs.get(pos + 1).getSongPreview();
+        if(pos != mSongs.size() -1) {
+            songs = mSongs;
+            pos = i + 1;
+
+            mSongUri = mSongs.get(pos).getSongUri();
+            mSongName = mSongs.get(pos).getSongName();
+            mAuthorName = mSongs.get(pos).getAuthorName();
+            mResId = mSongs.get(pos).getSongPreview();
+        }
+
 
         context.startService(intent);
     }
 
 
-    public static void setPreviousSongSong(List<Song> mSongs, int pos, Context context) {
+    public static void setPreviousSongSong(List<Song> mSongs, int i, Context context) {
         final Intent intent = new Intent(context, BackgroundService.class);
         intent.setAction(ACTION_SET_PREVIOUS_SONG);
 
-        songs = mSongs;
-        mSongUri = mSongs.get(pos - 1).getSongUri();
-        mSongName = mSongs.get(pos - 1).getSongName();
-        mAuthorName = mSongs.get(pos - 1).getAuthorName();
-        mResId = mSongs.get(pos - 1).getSongPreview();
+        if(pos != 0) {
+            songs = mSongs;
+            pos = i - 1;
+
+            mSongUri = mSongs.get(pos).getSongUri();
+            mSongName = mSongs.get(pos).getSongName();
+            mAuthorName = mSongs.get(pos).getAuthorName();
+            mResId = mSongs.get(pos).getSongPreview();
+        }
+
 
         context.startService(intent);
     }
+
+
 
     public static void seekTo(int time, Context context) {
         final Intent intent = new Intent(context, BackgroundService.class);
-        intent.setAction(ACTION_SET_PREVIOUS_SONG);
+        intent.setAction(ACTION_SEEK_TO);
 
-        currentTime = time;
+        mTime = time;
 
         context.startService(intent);
     }
 
+
+    private void changeSong() {
+        mMediaPlayer.reset();//Сбрасываем текущую песню
+        try {
+            mMediaPlayer.setDataSource(context, Uri.parse(mSongUri));//Включаем ту, на которую нажали
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            mMediaPlayer.prepare();//Что-то делаем, не знаю что, но надо
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        mMediaPlayer.start();//Запускаем
+    }
+
+
+    public static class TimeChangedEvent {
+        public int time;
+        public int duration;
+
+        private TimeChangedEvent(int time, int duration) {
+            this.time = time;
+            this.duration = duration;
+        }
+
+        public int getTime() {
+            return time;
+        }
+
+        public int getDuration() {
+            return duration;
+        }
+    }
+
+
+
+
+    public static class SongChangedEvent {
+        List<Song> songs;
+        int pos;
+
+        private SongChangedEvent(List<Song> songs, int pos) {
+            this.songs = songs;
+            this.pos = pos;
+        }
+
+        public List<Song> getSongs() {
+            return songs;
+        }
+
+        public int getPos() {
+            return pos;
+        }
+    }
+
+
+
+
+
+    /**
+     *
+     * Как-то переделать под mMediaPlayer.isPlaying
+     */
+
+    public static void setChangeListener(ChangeListener listener) {
+        mChangeListener = listener;
+    }
+
+    interface ChangeListener {
+
+        void onChange(boolean isPlaying);
+    }
+
 }
+
+

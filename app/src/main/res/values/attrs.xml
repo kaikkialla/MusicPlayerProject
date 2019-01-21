@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="margin_left">32</dimen>
+    <dimen name="margin_right">32</dimen>
+    <dimen name="list_margin_left">32</dimen>
+
+
+</resources>

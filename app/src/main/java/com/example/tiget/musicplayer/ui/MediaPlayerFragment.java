@@ -4,7 +4,6 @@ package com.example.tiget.musicplayer.ui;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,7 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,29 +21,39 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.example.tiget.musicplayer.BuildConfig;
 import com.example.tiget.musicplayer.R;
 import com.makeramen.roundedimageview.RoundedImageView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
+
+
+import static com.example.tiget.musicplayer.ui.BackgroundService.songs;
+import static com.example.tiget.musicplayer.ui.BackgroundService.pos;
 
 import static com.example.tiget.musicplayer.ui.MainActivity.MARGIN_LEFT_PX;
 import static com.example.tiget.musicplayer.ui.MainActivity.MARGIN_RIGHT_PX;
-import static com.example.tiget.musicplayer.ui.MainActivity.MARGIN_TOP_DP;
 import static com.example.tiget.musicplayer.ui.MainActivity.MARGIN_TOP_PX;
-import static com.example.tiget.musicplayer.ui.MainActivity.SCREEN_HEIGHT_PX;
+
+
 import static com.example.tiget.musicplayer.ui.MainActivity.SCREEN_WIDTH_PX;
+
+import static com.example.tiget.musicplayer.ui.MainActivity.PRESSED_ALPHA;
+import static com.example.tiget.musicplayer.ui.MainActivity.DEFAULT_ALPHA;
 
 
 public class MediaPlayerFragment extends Fragment {
-    Context context;
+    FragmentActivity activity;
     View view;
 
     TextView elapsedTimeLabel;
     TextView remainingTimeLabel;
     TextView SongName;
     TextView AuthorName;
-    RoundedImageView SongImage;
+    static RoundedImageView SongImage;
     LinearLayout positionBarLayout;
 
     ImageView mBackButton;
@@ -54,19 +63,21 @@ public class MediaPlayerFragment extends Fragment {
 
     SeekBar mTimeline;
     SeekBar mVolumeBar;
-
     private static String mSongUri;
     private static String mAuthorName;
     private static String mSongName;
     private static int mResId;
 
-    private static int mPos;
-    private static List<Song> mSongs;
+    //public static int mPos;
+    //public static List<Song> mSongs;
 
-    public static MediaPlayerFragment newInstance(List<Song> songs, int pos) {
+    int time;
+    int duration;
+
+    public static MediaPlayerFragment newInstance(List<Song> a, int b) {
         MediaPlayerFragment fragment = new MediaPlayerFragment();
-        mSongs = songs;
-        mPos = pos;
+        songs = a;
+        pos = b;
         return fragment;
     }
 
@@ -75,7 +86,7 @@ public class MediaPlayerFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        context = getContext();
+
         int orientation = getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             view = inflater.inflate(R.layout.media_player_landscape, container, false);
@@ -91,6 +102,9 @@ public class MediaPlayerFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        activity = getActivity();
+
+
         mBackButton = view.findViewById(R.id.backBtn);
         mPauseButton = view.findViewById(R.id.pauseBtn);
         mRewindButton = view.findViewById(R.id.rewindBtn);
@@ -108,7 +122,9 @@ public class MediaPlayerFragment extends Fragment {
         SongName = view.findViewById(R.id.SongNameTextView);
 
 
+
         int orientation = getResources().getConfiguration().orientation;
+
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
 
             setImageSize(Configuration.ORIENTATION_LANDSCAPE);
@@ -119,46 +135,53 @@ public class MediaPlayerFragment extends Fragment {
             setImageSize(Configuration.ORIENTATION_PORTRAIT);
             setTimelineSize(Configuration.ORIENTATION_PORTRAIT);
 
+    }
+
+
+
+        mSongUri = songs.get(pos).getSongUri();
+        mAuthorName = songs.get(pos).getAuthorName();
+        mSongName = songs.get(pos).getSongName();
+        mResId = songs.get(pos).getSongPreview();
+
+
+        if(pos == songs.size() - 1) {
+            mForwardButton.setClickable(false);
+            mForwardButton.setAlpha(PRESSED_ALPHA);
+        } else if(pos != songs.size() - 1){
+            mForwardButton.setClickable(true);
+            mForwardButton.setAlpha(DEFAULT_ALPHA);
+        }
+
+        if(pos == 0) {
+            mRewindButton.setClickable(false);
+            mRewindButton.setAlpha(PRESSED_ALPHA);
+        } else if(pos != 0){
+            mRewindButton.setClickable(true);
+            mRewindButton.setAlpha(DEFAULT_ALPHA);
         }
 
 
-        mSongUri = mSongs.get(mPos).getSongUri();
-        mAuthorName = mSongs.get(mPos).getAuthorName();
-        mSongName = mSongs.get(mPos).getSongName();
-        mResId = mSongs.get(mPos).getSongPreview();
-
-
-
-
-        SongName.setText(mSongName);
-        AuthorName.setText(mAuthorName);
-
-        if(mResId != 0) {
-            SongImage.setImageResource(mResId);
-        } else if(mResId == 0) {
-            SongImage.setImageResource(R.drawable.no_image_loaded);
-        }
-
-
+        changeInfo();
+        t.checkPlayButtonState(activity, mPauseButton, 0);
 
         mTimeline.setMax(BackgroundService.mMediaPlayer.getDuration() / 1000);
+
+
         mTimeline.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 if (b) {
                     mTimeline.setProgress(i);
+                    BackgroundService.seekTo(i * 1000, activity);
                 }
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
+            public void onStartTrackingTouch(SeekBar seekBar) { }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                BackgroundService.seekTo(seekBar.getProgress(), context);
-                Log.e("jsgs", String.valueOf(seekBar.getProgress()));
-            }
+            public void onStopTrackingTouch(SeekBar seekBar) { }
         });
 
 
@@ -182,8 +205,7 @@ public class MediaPlayerFragment extends Fragment {
         mPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                t.checkPlayButtonPressedState(context, mPauseButton, 0);
-
+                t.checkPlayButtonPressedState(activity, mPauseButton, 0);
             }
         });
 
@@ -191,11 +213,8 @@ public class MediaPlayerFragment extends Fragment {
         mForwardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //BackgroundService.changeSong(mSongs, mPos + 1, context);
-                BackgroundService.setNextSong(mSongs, mPos, context);
-                mPos = mPos + 1;
-
-                changeInfo();
+                BackgroundService.setNextSong(songs, pos, activity);
+                //changeInfo();
             }
         });
 
@@ -203,13 +222,8 @@ public class MediaPlayerFragment extends Fragment {
         mRewindButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*
-                BackgroundService.changeSong(mSongs, mPos - 1,  context);
-                */
-                BackgroundService.setPreviousSongSong(mSongs, mPos, context);
-                mPos = mPos - 1;
-
-                changeInfo();
+                BackgroundService.setPreviousSongSong(songs, pos, activity);
+                //changeInfo();
 
             }
         });
@@ -219,64 +233,92 @@ public class MediaPlayerFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View view) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.f, new MusicFragment()).commit();
-                t.showMiniMediaFragment(mSongs, mPos, getActivity(), t.mMediaPlayerFragmentTag);
+                t.showFragment(new MusicFragment(), getActivity(), "TAG");
+                //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.f, new MusicFragment()).commit();
+                t.showMiniMediaFragment(songs, pos, getActivity(), t.mMediaPlayerFragmentTag);
             }
         });
 
-
+/*
         new Thread(new Runnable() {
             @Override
             public void run() {
                 while (BackgroundService.mMediaPlayer != null) {
                     try {
                         Message msg = new Message();
-                        msg.what = BackgroundService.mMediaPlayer.getCurrentPosition();
-                        handler.sendMessage(msg);
+                        msg.what = time;
+                        mHandler.sendMessage(msg);
                         Thread.sleep(1000);
                     } catch (InterruptedException ignored) {
                     }
                 }
             }
         }).start();
+        */
     }
 
 
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onTimeChangeEvent(BackgroundService.TimeChangedEvent event) {
+        time = event.time;
+        duration = event.duration;
 
+        mTimeline.setProgress(time);
+
+        //Update Labels
+        String elapsedTime = createTimeLabel(time);
+        elapsedTimeLabel.setText(elapsedTime);
+
+        String remainingTime = createTimeLabel(duration - time);
+        remainingTimeLabel.setText("- " + remainingTime);
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onSongChangeEvent(BackgroundService.SongChangedEvent event) {
+        if(pos == songs.size() - 1) {
+            mForwardButton.setClickable(false);
+            mForwardButton.setAlpha(PRESSED_ALPHA);
+        } else if(pos != songs.size() - 1){
+            mForwardButton.setClickable(true);
+            mForwardButton.setAlpha(DEFAULT_ALPHA);
+        }
+
+        if(pos == 0) {
+            mRewindButton.setClickable(false);
+            mRewindButton.setAlpha(PRESSED_ALPHA);
+        } else if(pos != 0){
+            mRewindButton.setClickable(true);
+            mRewindButton.setAlpha(DEFAULT_ALPHA);
+        }
+
+        changeInfo();
+    }
+
+
+/*
     //Устанавливаем текущее и оставшееся время
     @SuppressLint("HandlerLeak")
-    private Handler handler = new Handler(){
+    private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-            int currentPosition = msg.what / 1000;
-            int duration = BackgroundService.mMediaPlayer.getDuration() / 1000;
-
-        //Updating Position Bar
-
-
-        Log.e("gsgmsgmsogus", duration + " / " + currentPosition + " / " + (duration - currentPosition));
-
-        if(currentPosition != duration) {
-            mTimeline.setProgress(currentPosition);
-
-            //Update Labels
-            String elapsedTime = createTimeLabel(currentPosition);
-            elapsedTimeLabel.setText(elapsedTime);
-
-            String remainingTime = createTimeLabel(duration - currentPosition);
-            remainingTimeLabel.setText("- " + remainingTime);
-
-        } else if(currentPosition == duration) {
-            BackgroundService.setNextSong(mSongs, mPos, context);
-            mPos = mPos + 1;
 
 
 
-        }
 
+            if(msg.what != duration) {
+                mTimeline.setProgress(msg.what);
+
+                //Update Labels
+                String elapsedTime = createTimeLabel(msg.what);
+                elapsedTimeLabel.setText(elapsedTime);
+
+                String remainingTime = createTimeLabel(duration - msg.what);
+                remainingTimeLabel.setText("- " + remainingTime);
+            }
         }
     };
-
+*/
 
     public String createTimeLabel(int time) {
         String timeLabel = "";
@@ -306,6 +348,8 @@ public class MediaPlayerFragment extends Fragment {
         }
     }
 
+
+
     public void setTimelineSize(int orientation) {
         if(orientation == Configuration.ORIENTATION_PORTRAIT) {
 
@@ -321,15 +365,6 @@ public class MediaPlayerFragment extends Fragment {
 
         }
     }
-
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        t.checkPlayButtonState(context, mPauseButton, 0);
-    }
-
 
 
 //При смене ориентации меняем расположение элементов
@@ -355,12 +390,32 @@ public class MediaPlayerFragment extends Fragment {
 
 
     public void changeInfo() {
-        SongName.setText(mSongs.get(mPos).getSongName());
-        if(SongImage.getDrawable() != null) {
-            SongImage.setImageResource(mSongs.get(mPos).getSongPreview());
-        } else if(SongImage.getDrawable() == null) {
-            SongImage.setImageResource(R.drawable.no_image_loaded);
-        }
+        SongName.setText(songs.get(pos).getSongName());
+        AuthorName.setText(songs.get(pos).getAuthorName());
+        SongImage.setImageResource(songs.get(pos).getSongPreview());
     }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+
+    /*
+    @Override
+    public void onResume() {
+        super.onResume();
+        t.checkPlayButtonState(context, mPauseButton, 0);
+    }
+    */
 }
 

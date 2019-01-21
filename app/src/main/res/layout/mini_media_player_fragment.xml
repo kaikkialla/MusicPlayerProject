@@ -41,8 +41,9 @@
 
     <ImageView
         android:id="@+id/mini_play_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:padding="2dp"
         android:src="@drawable/pause_gray"
         android:layout_centerVertical="true"
         android:layout_margin="4dp"
@@ -53,8 +54,9 @@
 
     <ImageView
         android:id="@+id/mini_forward"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:padding="2dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_margin="4dp"

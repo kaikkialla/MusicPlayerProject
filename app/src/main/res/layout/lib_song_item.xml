@@ -53,18 +53,18 @@
                 android:textColor="@color/colorTextLight"/>
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/SongInfo"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="16dp"
-            android:textColor="@color/colorTextLight"
-            android:background="@drawable/circular_selector"
-            android:src="@drawable/song_info_gray"
 
-            />
+    <ImageView
+        android:id="@+id/SongInfo"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/rectangle_selector"
+        android:src="@drawable/song_info_gray"
+        android:padding="2dp"/>
+
 
 
 
